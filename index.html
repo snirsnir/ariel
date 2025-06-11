@@ -1166,7 +1166,36 @@ window.clearForm = function() {
        window.addEventListener('load', function() {
            console.log('מערכת סיכומי ייעוץ רפואי מוכנה לשימוש');
        });
-
+// הוסף את זה לקוד שלך
+document.addEventListener('DOMContentLoaded', function() {
+    const textareas = document.querySelectorAll('textarea');
+    
+    textareas.forEach(textarea => {
+        textarea.addEventListener('input', function() {
+            let text = this.value;
+            let lines = text.split('\n');
+            let newLines = [];
+            
+            lines.forEach(line => {
+                while (line.length > 93) {
+                    // מוצא את המקום הטוב ביותר לשבור (רווח אחרון לפני 93)
+                    let breakPoint = 93;
+                    let lastSpace = line.lastIndexOf(' ', 93);
+                    
+                    if (lastSpace > 70) { // אם יש רווח לא רחוק מדי
+                        breakPoint = lastSpace;
+                    }
+                    
+                    newLines.push(line.substring(0, breakPoint));
+                    line = line.substring(breakPoint).trim();
+                }
+                newLines.push(line);
+            });
+            
+            this.value = newLines.join('\n');
+        });
+    });
+});
    </script>
 </body>
 </html>
