@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+    <title>מערכת סיכומי ייעוץ רפואי</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap');
         
@@ -20,18 +20,193 @@
             padding: 20px;
             direction: rtl;
         }
-.form-group textarea:not(#diagnosis) {
-    text-align: right !important;
-    direction: rtl !important;
-    -webkit-text-align: right !important;
-    -webkit-direction: rtl !important;
-    unicode-bidi: plaintext !important;
+
+        /* מסך כניסה */
+        .auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .auth-container {
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-title {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .auth-subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+.pin-input {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 30px 0;
+    direction: ltr; /* הוסף את זה */
 }
 
-.form-group textarea:not(#diagnosis):focus {
-    text-align: right !important;
-    direction: rtl !important;
-}
+        .pin-digit {
+            width: 60px;
+            height: 60px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+
+        .pin-digit:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .pin-digit.filled {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .pin-digit.error {
+            border-color: #e74c3c;
+            background: #ffe6e6;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .auth-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .auth-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .auth-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            margin-top: 15px;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .error-message.show {
+            opacity: 1;
+        }
+
+        .lock-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .timer-display {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #333;
+            z-index: 1000;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .timer-display.warning {
+            background: rgba(255,193,7,0.9);
+            color: #856404;
+        }
+
+        .timer-display.danger {
+            background: rgba(220,53,69,0.9);
+            color: white;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* שאר הסטיילים הקיימים */
+        .form-group textarea:not(#diagnosis) {
+            text-align: right !important;
+            direction: rtl !important;
+            -webkit-text-align: right !important;
+            -webkit-direction: rtl !important;
+            unicode-bidi: plaintext !important;
+        }
+
+        .form-group textarea:not(#diagnosis):focus {
+            text-align: right !important;
+            direction: rtl !important;
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -100,11 +275,13 @@
         .section.active {
             display: block;
         }
-.diagnosis-content {
-    direction: ltr !important;
-    text-align: left !important;
-    font-weight: bold !important;
-}
+
+        .diagnosis-content {
+            direction: ltr !important;
+            text-align: left !important;
+            font-weight: bold !important;
+        }
+
         .form-container {
             background: #f8f9fa;
             padding: 30px;
@@ -143,19 +320,20 @@
             -webkit-text-align: right;
             -webkit-direction: rtl;
         }
-        
 
         .form-group textarea {
             resize: vertical;
             min-height: 120px;
         }
-#diagnosis {
-    direction: ltr !important;
-    text-align: left !important;
-    font-weight: bold !important;
-    -webkit-direction: ltr !important;
-    -webkit-text-align: left !important;
-}
+
+        #diagnosis {
+            direction: ltr !important;
+            text-align: left !important;
+            font-weight: bold !important;
+            -webkit-direction: ltr !important;
+            -webkit-text-align: left !important;
+        }
+
         .btn {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
@@ -334,7 +512,6 @@
             box-sizing: border-box;
         }
 
-        /* היסטוריה */
         .search-container {
             margin-bottom: 30px;
             display: grid;
@@ -442,242 +619,245 @@
         }
 
         /* תיקונים מיוחדים להדפסה */
-@media print {
-    html, body {
-        margin: 0 !important;
-        padding: 0 !important;
-        background: white !important;
-        height: auto !important;
-        overflow: visible !important;
-        font-size: 14px !important;
-        -webkit-print-color-adjust: exact !important;
-        color-adjust: exact !important;
-    }
-    .medical-form .content-section:nth-of-type(2) div:last-child,
-.medical-form div[style*="diagnosis"] {
-    direction: ltr !important;
-    text-align: left !important;
-    font-weight: bold !important;
-    -webkit-direction: ltr !important;
-    -webkit-text-align: left !important;
-}
-    * {
-        visibility: hidden !important;
-        -webkit-box-sizing: border-box !important;
-        box-sizing: border-box !important;
-    }
-    
-    .medical-form, .medical-form * {
-        visibility: visible !important;
-    }
-    .diagnosis-content {
-    direction: ltr !important;
-    text-align: left !important;
-    font-weight: bold !important;
-    -webkit-direction: ltr !important;
-    -webkit-text-align: left !important;
-}
-    .medical-form {
-        position: absolute !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        width: 100% !important;
-        height: auto !important;
-        max-width: none !important;
-        max-height: none !important;
-        padding: 1.2cm 1.8cm 0.8cm 1.8cm !important;
-        margin: 0 !important;
-        font-size: 13px !important;
-        line-height: 1.4 !important;
-        background: white !important;
-        border: none !important;
-        direction: rtl !important;
-        text-align: right !important;
-        overflow: visible !important;
-        box-sizing: border-box !important;
-        page-break-after: auto !important;
-        page-break-inside: auto !important;
-    }
-    
-    .doctor-header {
-        text-align: center !important;
-        margin-bottom: 15px !important;
-        border-bottom: 1px solid #333 !important;
-        padding-bottom: 10px !important;
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-        page-break-after: avoid !important;
-        break-after: avoid !important;
-    }
-    
-    .visit-info {
-        display: flex !important;
-        justify-content: space-between !important;
-        margin-bottom: 15px !important;
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-        page-break-after: avoid !important;
-        break-after: avoid !important;
-    }
-    
-    .visit-date {
-        text-align: left !important;
-    }
-    
-    .patient-info {
-        text-align: right !important;
-    }
-    
-    .summary-title {
-        text-align: center !important;
-        margin: 10px 0 !important;
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-        page-break-after: avoid !important;
-        break-after: avoid !important;
-    }
-    
-    .visit-details {
-        text-align: center !important;
-        margin-bottom: 10px !important;
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-        page-break-after: avoid !important;
-        break-after: avoid !important;
-    }
-    
-    .content-section {
-        margin-bottom: 10px !important;
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-    }
-    
-    .section-title {
-        text-align: right !important;
-        font-weight: bold !important;
-        margin-bottom: 5px !important;
-        page-break-after: avoid !important;
-        break-after: avoid !important;
-    }
-    
-    .instructions-title {
-        text-align: right !important;
-        font-weight: bold !important;
-        margin-bottom: 8px !important;
-        page-break-after: avoid !important;
-        break-after: avoid !important;
-    }
-    
-    .medical-content {
-        margin-bottom: 10px !important;
-        text-align: right !important;
-        page-break-inside: auto !important;
-        break-inside: auto !important;
-    }
-    
-    .diagnosis-line {
-        margin: 10px 0 !important;
-        border-top: 1px solid #333 !important;
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-    }
-    
-    .signature-section {
-        margin-top: 15px !important;
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-        min-height: auto !important;
-        height: auto !important;
-        overflow: visible !important;
-    }
+        @media print {
+            html, body {
+                margin: 0 !important;
+                padding: 0 !important;
+                background: white !important;
+                height: auto !important;
+                overflow: visible !important;
+                font-size: 14px !important;
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+            .medical-form .content-section:nth-of-type(2) div:last-child,
+            .medical-form div[style*="diagnosis"] {
+                direction: ltr !important;
+                text-align: left !important;
+                font-weight: bold !important;
+                -webkit-direction: ltr !important;
+                -webkit-text-align: left !important;
+            }
+            * {
+                visibility: hidden !important;
+                -webkit-box-sizing: border-box !important;
+                box-sizing: border-box !important;
+            }
+            
+            .medical-form, .medical-form * {
+                visibility: visible !important;
+            }
+            .diagnosis-content {
+                direction: ltr !important;
+                text-align: left !important;
+                font-weight: bold !important;
+                -webkit-direction: ltr !important;
+                -webkit-text-align: left !important;
+            }
+            .medical-form {
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                width: 100% !important;
+                height: auto !important;
+                max-width: none !important;
+                max-height: none !important;
+                padding: 1.2cm 1.8cm 0.8cm 1.8cm !important;
+                margin: 0 !important;
+                font-size: 13px !important;
+                line-height: 1.4 !important;
+                background: white !important;
+                border: none !important;
+                direction: rtl !important;
+                text-align: right !important;
+                overflow: visible !important;
+                box-sizing: border-box !important;
+                page-break-after: auto !important;
+                page-break-inside: auto !important;
+            }
+            
+            .doctor-header {
+                text-align: center !important;
+                margin-bottom: 15px !important;
+                border-bottom: 1px solid #333 !important;
+                padding-bottom: 10px !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+            }
+            
+            .visit-info {
+                display: flex !important;
+                justify-content: space-between !important;
+                margin-bottom: 15px !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+            }
+            
+            .visit-date {
+                text-align: left !important;
+            }
+            
+            .patient-info {
+                text-align: right !important;
+            }
+            
+            .summary-title {
+                text-align: center !important;
+                margin: 10px 0 !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+            }
+            
+            .visit-details {
+                text-align: center !important;
+                margin-bottom: 10px !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+            }
+            
+            .content-section {
+                margin-bottom: 10px !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            
+            .section-title {
+                text-align: right !important;
+                font-weight: bold !important;
+                margin-bottom: 5px !important;
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+            }
+            
+            .instructions-title {
+                text-align: right !important;
+                font-weight: bold !important;
+                margin-bottom: 8px !important;
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+            }
+            
+            .medical-content {
+                margin-bottom: 10px !important;
+                text-align: right !important;
+                page-break-inside: auto !important;
+                break-inside: auto !important;
+            }
+            
+            .diagnosis-line {
+                margin: 10px 0 !important;
+                border-top: 1px solid #333 !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            
+            .signature-section {
+                margin-top: 15px !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                min-height: auto !important;
+                height: auto !important;
+                overflow: visible !important;
+            }
 
-    .signature-text {
-        font-weight: bold !important;
-        text-align: right !important;
-        margin-bottom: 0px !important;
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-    }
-    .page-two-spacer {
-    height: 3cm !important;
-    page-break-before: always !important;
-    visibility: hidden !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-.page-break-spacer {
-    page-break-before: always !important;
-    height: 3cm !important;
-    visibility: hidden !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    display: block !important;
-}
-@page {
-    size: A4 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
+            .signature-text {
+                font-weight: bold !important;
+                text-align: right !important;
+                margin-bottom: 0px !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            .page-two-spacer {
+                height: 3cm !important;
+                page-break-before: always !important;
+                visibility: hidden !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .page-break-spacer {
+                page-break-before: always !important;
+                height: 3cm !important;
+                visibility: hidden !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                display: block !important;
+            }
+            @page {
+                size: A4 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
 
-@page:first {
-    margin: 0 !important;
-}
+            @page:first {
+                margin: 0 !important;
+            }
 
+            html {
+                max-height: 29.7cm !important;
+                overflow: hidden !important;
+            }
 
-/* אילוץ עמוד יחיד */
-html {
-    max-height: 29.7cm !important;
-    overflow: hidden !important;
-}
+            body {
+                max-height: 29.7cm !important;
+                overflow: hidden !important;
+                page-break-after: avoid !important;
+            }
+            
+            .medical-form, .medical-form *, 
+            .doctor-header, .visit-info, .summary-title, 
+            .visit-details, .medical-content, .signature-section {
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+                page-break-before: avoid !important;
+                break-before: avoid !important;
+            }
+            
+            .medical-form > *:not(:last-child) {
+                margin-bottom: 8px !important;
+            }
+            
+            .medical-form > *:last-child {
+                margin-bottom: 0 !important;
+                padding-bottom: 0 !important;
+            }
+            
+            .medical-form.compact {
+                font-size: 11px !important;
+                line-height: 1.3 !important;
+            }
+            
+            .medical-form.compact .doctor-header {
+                margin-bottom: 10px !important;
+                padding-bottom: 8px !important;
+            }
+            
+            .medical-form.compact .visit-info,
+            .medical-form.compact .summary-title,
+            .medical-form.compact .visit-details,
+            .medical-form.compact .content-section,
+            .medical-form.compact .medical-content,
+            .medical-form.compact .diagnosis-line {
+                margin-bottom: 6px !important;
+            }
+            
+            .medical-form.compact .signature-section {
+                margin-top: 10px !important;
+            }
 
-body {
-    max-height: 29.7cm !important;
-    overflow: hidden !important;
-    page-break-after: avoid !important;
-}
-    
-    .medical-form, .medical-form *, 
-    .doctor-header, .visit-info, .summary-title, 
-    .visit-details, .medical-content, .signature-section {
-        page-break-after: avoid !important;
-        break-after: avoid !important;
-        page-break-before: avoid !important;
-        break-before: avoid !important;
-    }
-    
-    .medical-form > *:not(:last-child) {
-        margin-bottom: 8px !important;
-    }
-    
-    .medical-form > *:last-child {
-        margin-bottom: 0 !important;
-        padding-bottom: 0 !important;
-    }
-    
-    .medical-form.compact {
-        font-size: 11px !important;
-        line-height: 1.3 !important;
-    }
-    
-    .medical-form.compact .doctor-header {
-        margin-bottom: 10px !important;
-        padding-bottom: 8px !important;
-    }
-    
-    .medical-form.compact .visit-info,
-    .medical-form.compact .summary-title,
-    .medical-form.compact .visit-details,
-    .medical-form.compact .content-section,
-    .medical-form.compact .medical-content,
-    .medical-form.compact .diagnosis-line {
-        margin-bottom: 6px !important;
-    }
-    
-    .medical-form.compact .signature-section {
-        margin-top: 10px !important;
-    }
-}
+            /* הסתר אלמנטי הזדהות בהדפסה */
+            .auth-overlay, .timer-display {
+                display: none !important;
+            }
+        }
 
         @media screen and (max-width: 768px) {
             .form-row {
@@ -688,11 +868,11 @@ body {
                 grid-template-columns: 1fr;
             }
             .form-group textarea {
-    text-align: right !important;
-    direction: rtl !important;
-    -webkit-direction: rtl !important;
-    unicode-bidi: plaintext;
-}
+                text-align: right !important;
+                direction: rtl !important;
+                -webkit-direction: rtl !important;
+                unicode-bidi: plaintext;
+            }
             
             .visit-info,
             .signature-section {
@@ -704,10 +884,49 @@ body {
                 padding: 20px;
                 font-size: 12px;
             }
+
+            .auth-container {
+                padding: 30px;
+            }
+
+            .pin-digit {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- מסך הזדהות -->
+    <div id="authOverlay" class="auth-overlay">
+        <div class="auth-container">
+            <div class="lock-icon">🔒</div>
+            <div class="auth-title">מערכת מאובטחת</div>
+            <div class="auth-subtitle">נא להזין קוד כניסה בן 4 ספרות</div>
+            
+<div class="pin-input">
+    <input type="password" maxlength="1" class="pin-digit" id="pin1">
+    <input type="password" maxlength="1" class="pin-digit" id="pin2">
+    <input type="password" maxlength="1" class="pin-digit" id="pin3">
+    <input type="password" maxlength="1" class="pin-digit" id="pin4">
+</div>
+            
+            <button class="auth-button" id="loginBtn" onclick="attemptLogin()">
+                🔓 כניסה למערכת
+            </button>
+            
+            <div class="error-message" id="errorMessage">
+                קוד שגוי, נסה שוב
+            </div>
+        </div>
+    </div>
+
+    <!-- מחוון זמן -->
+    <div id="timerDisplay" class="timer-display hidden">
+        ⏱️ <span id="timeLeft">30:00</span>
+    </div>
+
     <div class="container">
         <div class="header">
             <h1>🏥 מערכת סיכומי ייעוץ רפואי</h1>
@@ -759,6 +978,10 @@ body {
                         <label for="instructions">הנחיות</label>
                         <textarea id="instructions" placeholder="הזן הנחיות טיפול..."></textarea>
                     </div>
+                    <div class="form-group">
+    <label for="recipientEmail">כתובת מייל לשליחה (אופציונלי)</label>
+    <input type="email" id="recipientEmail" placeholder="example@gmail.com">
+</div>
 
                     <div style="text-align: center;">
                         <button class="btn" onclick="generatePreview()">צור תצוגה מקדימה</button>
@@ -774,6 +997,7 @@ body {
                     
                     <div style="text-align: center; margin-top: 20px;">
                         <button class="btn success" onclick="saveAndPrint()">💾 העלה לענן והדפס</button>
+                        <button class="btn success" onclick="sendTextByEmail()">📧 שלח במייל</button>
                         <button id="clearAfterPrintBtn" class="btn danger hidden" onclick="clearForm()">🧹 נקה טופס</button>
                     </div>
                 </div>
@@ -830,7 +1054,9 @@ body {
             </div>
         </div>
     </div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <!-- Firebase SDKs -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
@@ -853,22 +1079,240 @@ body {
     // Global variables
     let allSummaries = [];
     let currentSummaries = [];
+    let sessionTimer;
+    let timeLeft = 30 * 60; // 30 דקות בשניות
+    let isAuthenticated = false;
+
+    // Authentication system
+    const CORRECT_PIN = "1473";
+    // אתחול EmailJS (הוסף לתחילת הסקריפט)
+(function() {
+    emailjs.init("1DzFpfJdsgSxjJ-ac"); // החלף במפתח שלך
+})();
+
+// פונקציה לשליחת PDF במייל
+// החלף את הפונקציה sendPdfByEmail בזו:
+window.sendTextByEmail = async function() {
+    if (!isAuthenticated) return;
+    
+    const email = document.getElementById('recipientEmail').value;
+    const patientName = document.getElementById('patientName').value;
+    const patientId = document.getElementById('patientId').value;
+    const medicalReview = document.getElementById('medicalReview').value;
+    const diagnosis = document.getElementById('diagnosis').value;
+    const instructions = document.getElementById('instructions').value;
+    
+    if (!email || !patientName) {
+        alert('נא להזין כתובת מייל ושם מטופל');
+        return;
+    }
+    
+    const sendButton = document.querySelector('button[onclick="sendTextByEmail()"]');
+    
+    try {
+        if (sendButton) {
+            sendButton.disabled = true;
+            sendButton.textContent = '📧 שולח מייל...';
+        }
+        
+        const templateParams = {
+            to_email: email,
+            patient_name: patientName,
+            patient_id: patientId,
+            visit_date: new Date().toLocaleDateString('he-IL'),
+            medical_review: medicalReview || 'לא צוין',
+            diagnosis: diagnosis || 'לא צוין',
+            instructions: instructions || 'לא צוין'
+        };
+        
+        await emailjs.send(
+            'service_qly0erg',
+            'template_y1lnrfb',
+            templateParams
+        );
+        
+        alert('המייל נשלח בהצלחה! ✅');
+        
+    } catch (error) {
+        console.error('שגיאה בשליחת מייל:', error);
+        alert('שגיאה בשליחת המייל: ' + error.text);
+    }
+    
+    if (sendButton) {
+        sendButton.disabled = false;
+        sendButton.textContent = '📧 שלח במייל';
+    }
+    
+    resetSessionTimer();
+};
+    window.attemptLogin = function() {
+        const pin1 = document.getElementById('pin1').value;
+        const pin2 = document.getElementById('pin2').value;
+        const pin3 = document.getElementById('pin3').value;
+        const pin4 = document.getElementById('pin4').value;
+        
+        const enteredPin = pin1 + pin2 + pin3 + pin4;
+        
+        if (enteredPin.length !== 4) {
+            showError("נא להזין 4 ספרות");
+            return;
+        }
+        
+        if (enteredPin === CORRECT_PIN) {
+            // הצלחה
+            isAuthenticated = true;
+            document.getElementById('authOverlay').style.display = 'none';
+            document.getElementById('timerDisplay').classList.remove('hidden');
+            startSessionTimer();
+            clearPinInputs();
+        } else {
+            // שגיאה
+            showError("קוד שגוי, נסה שוב");
+            shakePinInputs();
+            clearPinInputs();
+        }
+    };
+
+    function showError(message) {
+        const errorElement = document.getElementById('errorMessage');
+        errorElement.textContent = message;
+        errorElement.classList.add('show');
+        
+        setTimeout(() => {
+            errorElement.classList.remove('show');
+        }, 3000);
+    }
+
+    function shakePinInputs() {
+        const inputs = document.querySelectorAll('.pin-digit');
+        inputs.forEach(input => {
+            input.classList.add('error');
+            setTimeout(() => {
+                input.classList.remove('error');
+            }, 500);
+        });
+    }
+
+    function clearPinInputs() {
+        document.getElementById('pin1').value = '';
+        document.getElementById('pin2').value = '';
+        document.getElementById('pin3').value = '';
+        document.getElementById('pin4').value = '';
+        document.getElementById('pin1').focus();
+    }
+
+    function lockSystem() {
+        isAuthenticated = false;
+        document.getElementById('authOverlay').style.display = 'flex';
+        document.getElementById('timerDisplay').classList.add('hidden');
+        clearTimeout(sessionTimer);
+        clearPinInputs();
+        
+        // הסתר את כל הסעיפים ותחזור לדף הראשי
+        hideAllSections();
+        document.getElementById('mainSection').classList.add('active');
+    }
+
+    function startSessionTimer() {
+        timeLeft = 30 * 60; // איפוס ל-30 דקות
+        updateTimerDisplay();
+        
+        sessionTimer = setInterval(() => {
+            timeLeft--;
+            updateTimerDisplay();
+            
+            if (timeLeft <= 0) {
+                lockSystem();
+            }
+        }, 1000);
+    }
+
+    function resetSessionTimer() {
+        if (isAuthenticated) {
+            clearTimeout(sessionTimer);
+            startSessionTimer();
+        }
+    }
+
+    function updateTimerDisplay() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        const display = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        
+        document.getElementById('timeLeft').textContent = display;
+        
+        const timerElement = document.getElementById('timerDisplay');
+        timerElement.classList.remove('warning', 'danger');
+        
+        if (timeLeft <= 300) { // 5 דקות אחרונות
+            timerElement.classList.add('danger');
+        } else if (timeLeft <= 600) { // 10 דקות אחרונות
+            timerElement.classList.add('warning');
+        }
+    }
+
+    // PIN input handling
+    document.addEventListener('DOMContentLoaded', function() {
+        const pinInputs = document.querySelectorAll('.pin-digit');
+        
+pinInputs.forEach((input, index) => {
+    input.addEventListener('input', function() {
+        if (this.value) {
+            this.classList.add('filled');
+            // עבור לתיבה הבאה (משמאל לימין)
+            if (index < pinInputs.length - 1) {
+                pinInputs[index + 1].focus();
+            } else {
+                // אם זו התיבה האחרונה, נסה להתחבר אוטומטית
+                setTimeout(attemptLogin, 100);
+            }
+        } else {
+            this.classList.remove('filled');
+        }
+    });
+    
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace' && !this.value && index > 0) {
+            // חזור לתיבה הקודמת (ימין לשמאל בביטול)
+            pinInputs[index - 1].focus();
+        }
+        if (e.key === 'Enter') {
+            attemptLogin();
+        }
+    });
+});
+
+// פוקוס ראשוני על התיבה הראשונה (השמאלית)
+pinInputs[0].focus();
+    });
+
+    // Activity tracking - reset timer on any interaction
+    document.addEventListener('click', resetSessionTimer);
+    document.addEventListener('keypress', resetSessionTimer);
+    document.addEventListener('scroll', resetSessionTimer);
+    document.addEventListener('mousemove', resetSessionTimer);
 
     // Navigation functions
     window.showMain = function() {
+        if (!isAuthenticated) return;
         hideAllSections();
         document.getElementById('mainSection').classList.add('active');
+        resetSessionTimer();
     };
 
     window.showNewConsultation = function() {
+        if (!isAuthenticated) return;
         hideAllSections();
         document.getElementById('newConsultationSection').classList.add('active');
+        resetSessionTimer();
     };
 
     window.showHistory = function() {
+        if (!isAuthenticated) return;
         hideAllSections();
         document.getElementById('historySection').classList.add('active');
         loadHistory();
+        resetSessionTimer();
     };
 
     function hideAllSections() {
@@ -879,6 +1323,8 @@ body {
 
     // Form functions
     window.generatePreview = function() {
+        if (!isAuthenticated) return;
+        
         const patientName = document.getElementById('patientName').value;
         const patientId = document.getElementById('patientId').value;
         const medicalReview = document.getElementById('medicalReview').value;
@@ -947,9 +1393,12 @@ ${diagnosis ? `<div class="content-section">
         
         // גלילה לתצוגה המקדימה
         document.getElementById('previewContainer').scrollIntoView({ behavior: 'smooth' });
+        resetSessionTimer();
     };
 
     window.clearForm = function() {
+        if (!isAuthenticated) return;
+        
         document.getElementById('patientName').value = '';
         document.getElementById('patientId').value = '';
         document.getElementById('medicalReview').value = '';
@@ -957,12 +1406,13 @@ ${diagnosis ? `<div class="content-section">
         document.getElementById('instructions').value = '';
         document.getElementById('previewContainer').classList.remove('active');
         document.getElementById('clearAfterPrintBtn').classList.add('hidden');
+        resetSessionTimer();
     };
-
-    // פונקציה מיוחדת להכנת הדפסה - מניעת עמוד שני
 
     // שמירה רק לענן
     window.saveAndPrint = async function() {
+        if (!isAuthenticated) return;
+        
         const patientName = document.getElementById('patientName').value;
         const patientId = document.getElementById('patientId').value;
         const medicalReview = document.getElementById('medicalReview').value;
@@ -1005,27 +1455,27 @@ ${diagnosis ? `<div class="content-section">
             return;
         }
         
-        // אופטימיזציה להדפסה
-// אופטימיזציה להדפסה
+        // הדפסה
+        const originalTitle = document.title;
+        const dateStr = new Date().toLocaleDateString('he-IL').replace(/\//g, '-');
+        document.title = `סיכום_${patientName}_${dateStr}`;
 
-// הדפסה
-const originalTitle = document.title;
-const dateStr = new Date().toLocaleDateString('he-IL').replace(/\//g, '-');
-document.title = `סיכום_${patientName}_${dateStr}`;
-
-// הוספת עיכוב ארוך יותר כדי לוודא שהאופטימיזציה החלה
-setTimeout(() => {
-    window.print();
-    
-    setTimeout(() => {
-        document.title = originalTitle;
-        document.getElementById('clearAfterPrintBtn').classList.remove('hidden');
-    }, 1000);
-}, 300);
+        setTimeout(() => {
+            window.print();
+            
+            setTimeout(() => {
+                document.title = originalTitle;
+                document.getElementById('clearAfterPrintBtn').classList.remove('hidden');
+            }, 1000);
+        }, 300);
+        
+        resetSessionTimer();
     };
 
     // טעינה רק מהענן
     async function loadHistory() {
+        if (!isAuthenticated) return;
+        
         try {
             document.getElementById('loadingHistory').classList.remove('hidden');
             document.getElementById('historyTable').classList.add('hidden');
@@ -1089,6 +1539,8 @@ setTimeout(() => {
             document.getElementById('loadingHistory').innerHTML = 
                 '<div style="color: #e74c3c;">❌ שגיאה בטעינת ההיסטוריה</div>';
         }
+        
+        resetSessionTimer();
     }
 
     function displayHistory() {
@@ -1137,6 +1589,8 @@ setTimeout(() => {
     }
 
     window.searchSummaries = function() {
+        if (!isAuthenticated) return;
+        
         const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
         
         if (!searchTerm) {
@@ -1159,9 +1613,13 @@ setTimeout(() => {
             document.querySelector('.empty-state h3').textContent = '🔍 לא נמצאו תוצאות';
             document.querySelector('.empty-state p').textContent = 'נסה לחפש במילות מפתח אחרות';
         }
+        
+        resetSessionTimer();
     };
 
     window.viewSummary = function(summaryId) {
+        if (!isAuthenticated) return;
+        
         const summary = allSummaries.find(s => s.id === summaryId);
         if (!summary) {
             alert('סיכום לא נמצא');
@@ -1182,72 +1640,78 @@ setTimeout(() => {
             // גלילה לתצוגה המקדימה
             document.getElementById('previewContainer').scrollIntoView({ behavior: 'smooth' });
         }, 100);
+        
+        resetSessionTimer();
     };
 
-window.printSummary = function(summaryId) {
-    const summary = allSummaries.find(s => s.id === summaryId);
-    if (!summary) {
-        alert('סיכום לא נמצא');
-        return;
-    }
-
-    // שמירת הערכים הנוכחיים של הטופס
-    const originalValues = {
-        name: document.getElementById('patientName').value,
-        id: document.getElementById('patientId').value,
-        review: document.getElementById('medicalReview').value,
-        diagnosis: document.getElementById('diagnosis').value,
-        instructions: document.getElementById('instructions').value
-    };
-
-    // מילוי הטופס עם נתוני הסיכום הנבחר
-    document.getElementById('patientName').value = summary.patientName || '';
-    document.getElementById('patientId').value = summary.patientId || '';
-    document.getElementById('medicalReview').value = summary.medicalReview || '';
-    document.getElementById('diagnosis').value = summary.diagnosis || '';
-    document.getElementById('instructions').value = summary.instructions || '';
-
-    // **צעד קריטי**: מעבר לעמוד הסיכום החדש
-    showNewConsultation();
-    
-    // יצירת התצוגה המקדימה
-    setTimeout(() => {
-        generatePreview();
+    window.printSummary = function(summaryId) {
+        if (!isAuthenticated) return;
         
-        // ציון שהדפסה מהיסטוריה - יש להחזיר את הערכים אחר כך
-        window.printingFromHistory = true;
-        window.originalHistoryValues = originalValues;
+        const summary = allSummaries.find(s => s.id === summaryId);
+        if (!summary) {
+            alert('סיכום לא נמצא');
+            return;
+        }
+
+        // שמירת הערכים הנוכחיים של הטופס
+        const originalValues = {
+            name: document.getElementById('patientName').value,
+            id: document.getElementById('patientId').value,
+            review: document.getElementById('medicalReview').value,
+            diagnosis: document.getElementById('diagnosis').value,
+            instructions: document.getElementById('instructions').value
+        };
+
+        // מילוי הטופס עם נתוני הסיכום הנבחר
+        document.getElementById('patientName').value = summary.patientName || '';
+        document.getElementById('patientId').value = summary.patientId || '';
+        document.getElementById('medicalReview').value = summary.medicalReview || '';
+        document.getElementById('diagnosis').value = summary.diagnosis || '';
+        document.getElementById('instructions').value = summary.instructions || '';
+
+        // **צעד קריטי**: מעבר לעמוד הסיכום החדש
+        showNewConsultation();
         
-        // הדפסה
+        // יצירת התצוגה המקדימה
         setTimeout(() => {
-            const originalTitle = document.title;
-            document.title = `סיכום_${summary.patientName}_${new Date(summary.date).toLocaleDateString('he-IL').replace(/\//g, '-')}`;
+            generatePreview();
             
+            // ציון שהדפסה מהיסטוריה - יש להחזיר את הערכים אחר כך
+            window.printingFromHistory = true;
+            window.originalHistoryValues = originalValues;
+            
+            // הדפסה
             setTimeout(() => {
-                window.print();
-                document.title = originalTitle;
+                const originalTitle = document.title;
+                document.title = `סיכום_${summary.patientName}_${new Date(summary.date).toLocaleDateString('he-IL').replace(/\//g, '-')}`;
                 
-                // חזרה לעמוד ההיסטוריה ושחזור הערכים
                 setTimeout(() => {
-                    if (window.printingFromHistory) {
-                        showHistory();
-                        
-                        // שחזור הערכים המקוריים בטופס
-                        document.getElementById('patientName').value = window.originalHistoryValues.name;
-                        document.getElementById('patientId').value = window.originalHistoryValues.id;
-                        document.getElementById('medicalReview').value = window.originalHistoryValues.review;
-                        document.getElementById('diagnosis').value = window.originalHistoryValues.diagnosis;
-                        document.getElementById('instructions').value = window.originalHistoryValues.instructions;
-                        
-                        // ניקוי משתני העזר
-                        window.printingFromHistory = false;
-                        window.originalHistoryValues = null;
-                    }
-                }, 1000);
-            }, 300);
-        }, 500);
-    }, 200);
-};
+                    window.print();
+                    document.title = originalTitle;
+                    
+                    // חזרה לעמוד ההיסטוריה ושחזור הערכים
+                    setTimeout(() => {
+                        if (window.printingFromHistory) {
+                            showHistory();
+                            
+                            // שחזור הערכים המקוריים בטופס
+                            document.getElementById('patientName').value = window.originalHistoryValues.name;
+                            document.getElementById('patientId').value = window.originalHistoryValues.id;
+                            document.getElementById('medicalReview').value = window.originalHistoryValues.review;
+                            document.getElementById('diagnosis').value = window.originalHistoryValues.diagnosis;
+                            document.getElementById('instructions').value = window.originalHistoryValues.instructions;
+                            
+                            // ניקוי משתני העזר
+                            window.printingFromHistory = false;
+                            window.originalHistoryValues = null;
+                        }
+                    }, 1000);
+                }, 300);
+            }, 500);
+        }, 200);
+        
+        resetSessionTimer();
+    };
 
     // Event listeners
     document.getElementById('searchInput').addEventListener('keypress', function(e) {
@@ -1265,99 +1729,100 @@ window.printSummary = function(summaryId) {
     document.addEventListener('DOMContentLoaded', function() {
         const textareas = document.querySelectorAll('textarea');
         // תיקון לאייפון
-const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-if (isIOS) {
-    textareas.forEach(textarea => {
-        textarea.addEventListener('focus', function() {
-            if (this.id === 'diagnosis') {
-                this.style.textAlign = 'left';
-                this.style.direction = 'ltr';
-            } else {
-                this.style.textAlign = 'right';
-                this.style.direction = 'rtl';
-            }
-        });
-    });
-}
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        if (isIOS) {
+            textareas.forEach(textarea => {
+                textarea.addEventListener('focus', function() {
+                    if (this.id === 'diagnosis') {
+                        this.style.textAlign = 'left';
+                        this.style.direction = 'ltr';
+                    } else {
+                        this.style.textAlign = 'right';
+                        this.style.direction = 'rtl';
+                    }
+                });
+            });
+        }
         textareas.forEach(textarea => {
-textarea.addEventListener('input', function() {
-    if (this.id === 'diagnosis') {
-        // עיבוד מיוחד לאבחנות
-        let text = this.value;
-        let lines = text.split('\n');
-        let newLines = [];
-        
-        lines.forEach((line, index) => {
-            // הסרת נקודות קיימות מתחילת השורה
-            line = line.replace(/^[•\-\*]\s*/, '').trim();
-            
-if (line.length > 0) {
-    // בדיקה אם כבר יש נקודה
-    if (!line.startsWith('• ')) {
-        line = '• ' + line;
-    }
-    
-    // שבירת שורות ארוכות
-    while (line.length > 95) {
-        let breakPoint = 95;
-        let lastSpace = line.lastIndexOf(' ', 95);
-        
-        if (lastSpace > 70) {
-            breakPoint = lastSpace;
-        }
-        
-        newLines.push(line.substring(0, breakPoint));
-        line = '  ' + line.substring(breakPoint).trim();
-    }
-    newLines.push(line);
-}else if (index < lines.length - 1) {
-                newLines.push(''); // שורה ריקה
-            }
-        });
-        
-        this.value = newLines.join('\n');
-    } else {
-        // עיבוד רגיל לשאר השדות (הקוד הקיים)
-        let text = this.value;
-        let lines = text.split('\n');
-        let newLines = [];
-        
-        lines.forEach(line => {
-            while (line.length > 93) {
-                let breakPoint = 93;
-                let lastSpace = line.lastIndexOf(' ', 93);
-                
-                if (lastSpace > 70) {
-                    breakPoint = lastSpace;
+            textarea.addEventListener('input', function() {
+                if (this.id === 'diagnosis') {
+                    // עיבוד מיוחד לאבחנות
+                    let text = this.value;
+                    let lines = text.split('\n');
+                    let newLines = [];
+                    
+                    lines.forEach((line, index) => {
+                        // הסרת נקודות קיימות מתחילת השורה
+                        line = line.replace(/^[•\-\*]\s*/, '').trim();
+                        
+                        if (line.length > 0) {
+                            // בדיקה אם כבר יש נקודה
+                            if (!line.startsWith('• ')) {
+                                line = '• ' + line;
+                            }
+                            
+                            // שבירת שורות ארוכות
+                            while (line.length > 95) {
+                                let breakPoint = 95;
+                                let lastSpace = line.lastIndexOf(' ', 95);
+                                
+                                if (lastSpace > 70) {
+                                    breakPoint = lastSpace;
+                                }
+                                
+                                newLines.push(line.substring(0, breakPoint));
+                                line = '  ' + line.substring(breakPoint).trim();
+                            }
+                            newLines.push(line);
+                        } else if (index < lines.length - 1) {
+                            newLines.push(''); // שורה ריקה
+                        }
+                    });
+                    
+                    this.value = newLines.join('\n');
+                } else {
+                    // עיבוד רגיל לשאר השדות (הקוד הקיים)
+                    let text = this.value;
+                    let lines = text.split('\n');
+                    let newLines = [];
+                    lines.forEach(line => {
+                        while (line.length > 93) {
+                            let breakPoint = 93;
+                            let lastSpace = line.lastIndexOf(' ', 93);
+                            
+                            if (lastSpace > 70) {
+                                breakPoint = lastSpace;
+                            }
+                            
+                            newLines.push(line.substring(0, breakPoint));
+                            line = line.substring(breakPoint).trim();
+                        }
+                        newLines.push(line);
+                    });
+                    
+                    this.value = newLines.join('\n');
                 }
-                
-                newLines.push(line.substring(0, breakPoint));
-                line = line.substring(breakPoint).trim();
+            });
+            // טיפול מיוחד בלחיצה על Enter באבחנות
+            if (textarea.id === 'diagnosis') {
+                textarea.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault(); // מונע את ה-Enter הרגיל
+                        
+                        const cursorPos = this.selectionStart;
+                        const textBefore = this.value.substring(0, cursorPos);
+                        const textAfter = this.value.substring(cursorPos);
+                        
+                        // הוספת שורה חדשה עם נקודה
+                        this.value = textBefore + '\n• ' + textAfter;
+                        
+                        // העברת הסמן למקום הנכון (אחרי הנקודה)
+                        this.selectionStart = this.selectionEnd = cursorPos + 3;
+                    }
+                });
             }
-            newLines.push(line);
-        });
-        
-        this.value = newLines.join('\n');
-    }
-});
-// טיפול מיוחד בלחיצה על Enter באבחנות
-if (textarea.id === 'diagnosis') {
-    textarea.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault(); // מונע את ה-Enter הרגיל
-            
-            const cursorPos = this.selectionStart;
-            const textBefore = this.value.substring(0, cursorPos);
-            const textAfter = this.value.substring(cursorPos);
-            
-            // הוספת שורה חדשה עם נקודה
-            this.value = textBefore + '\n• ' + textAfter;
-            
-            // העברת הסמן למקום הנכון (אחרי הנקודה)
-            this.selectionStart = this.selectionEnd = cursorPos + 3;
-        }
-    });
-}
         });
     });
 </script>
+</body>
+</html>
