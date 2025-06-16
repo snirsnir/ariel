@@ -20,7 +20,18 @@
             padding: 20px;
             direction: rtl;
         }
+.form-group textarea:not(#diagnosis) {
+    text-align: right !important;
+    direction: rtl !important;
+    -webkit-text-align: right !important;
+    -webkit-direction: rtl !important;
+    unicode-bidi: plaintext !important;
+}
 
+.form-group textarea:not(#diagnosis):focus {
+    text-align: right !important;
+    direction: rtl !important;
+}
         .container {
             max-width: 1200px;
             margin: 0 auto;
