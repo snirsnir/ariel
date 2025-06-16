@@ -89,7 +89,11 @@
         .section.active {
             display: block;
         }
-
+.diagnosis-content {
+    direction: ltr !important;
+    text-align: left !important;
+    font-weight: bold !important;
+}
         .form-container {
             background: #f8f9fa;
             padding: 30px;
@@ -128,12 +132,19 @@
             -webkit-text-align: right;
             -webkit-direction: rtl;
         }
+        
 
         .form-group textarea {
             resize: vertical;
             min-height: 120px;
         }
-
+#diagnosis {
+    direction: ltr !important;
+    text-align: left !important;
+    font-weight: bold !important;
+    -webkit-direction: ltr !important;
+    -webkit-text-align: left !important;
+}
         .btn {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
@@ -431,7 +442,14 @@
         -webkit-print-color-adjust: exact !important;
         color-adjust: exact !important;
     }
-    
+    .medical-form .content-section:nth-of-type(2) div:last-child,
+.medical-form div[style*="diagnosis"] {
+    direction: ltr !important;
+    text-align: left !important;
+    font-weight: bold !important;
+    -webkit-direction: ltr !important;
+    -webkit-text-align: left !important;
+}
     * {
         visibility: hidden !important;
         -webkit-box-sizing: border-box !important;
@@ -441,7 +459,13 @@
     .medical-form, .medical-form * {
         visibility: visible !important;
     }
-    
+    .diagnosis-content {
+    direction: ltr !important;
+    text-align: left !important;
+    font-weight: bold !important;
+    -webkit-direction: ltr !important;
+    -webkit-text-align: left !important;
+}
     .medical-form {
         position: absolute !important;
         top: 0 !important;
@@ -676,7 +700,7 @@ body {
     <div class="container">
         <div class="header">
             <h1>🏥 מערכת סיכומי ייעוץ רפואי</h1>
-            <p>ד"ר אריאל כץ - מומחה ומנתח אא"ג</p>
+            <p>ד"ר אריאל כץ - מומחה לרפואת אף אוזן גרון - כירורגיית ראש צוואר</p>
         </div>
 
         <div class="main-content">
@@ -860,7 +884,7 @@ body {
         const formHtml = `
             <div class="doctor-header">
                 <div class="doctor-name">ד"ר אריאל כץ</div>
-                <div class="doctor-title">מומחה ומנתח אא"ג</div>
+                <div class="doctor-title">מומחה לרפואת אף אוזן גרון - כירורגיית ראש צוואר</div>
                 <div class="doctor-license">מ.ר. 38091 מ.ר.מ 30570</div>
                 <div class="clinic-info">מרפאת מרום, אמנון ותמר 6 נתניה, טלפון - 074-705-0889</div>
             </div>
@@ -885,10 +909,10 @@ body {
                     <div>${medicalReview.replace(/\n/g, '<br>')}</div>
                 </div>` : ''}
 
-                ${diagnosis ? `<div class="content-section">
-                    <div class="section-title">אבחנות:</div>
-                    <div>${diagnosis.replace(/\n/g, '<br>')}</div>
-                </div>` : ''}
+${diagnosis ? `<div class="content-section">
+    <div class="section-title">אבחנות:</div>
+    <div class="diagnosis-content" style="direction: ltr; text-align: left; font-weight: bold;">${diagnosis.replace(/\n/g, '<br>')}</div>
+</div>` : ''}
             </div>
 
             <div class="diagnosis-line"></div>
@@ -925,111 +949,7 @@ body {
     };
 
     // פונקציה מיוחדת להכנת הדפסה - מניעת עמוד שני
-function optimizeForPrint() {
-    const form = document.getElementById('medicalForm');
-    if (!form) return;
 
-    // איפוס סגנונות קודמים
-    form.style.fontSize = '';
-    form.style.lineHeight = '';
-    form.style.padding = '';
-
-    // הגדרות בסיסיות להדפסה
-    form.style.maxHeight = 'none';
-    form.style.overflow = 'visible';
-
-    // הסרת כל הרווחים הגדולים
-    const allElements = form.querySelectorAll('*');
-    allElements.forEach(el => {
-        el.style.marginBottom = '10px';
-        el.style.paddingBottom = '0px';
-    });
-
-    // הקטנת רווחים ספציפיים
-    const doctorHeader = form.querySelector('.doctor-header');
-    if (doctorHeader) {
-        doctorHeader.style.marginBottom = '15px';
-        doctorHeader.style.paddingBottom = '10px';
-    }
-
-    const visitInfo = form.querySelector('.visit-info');
-    if (visitInfo) {
-        visitInfo.style.marginBottom = '15px';
-    }
-
-    const summaryTitle = form.querySelector('.summary-title');
-    if (summaryTitle) {
-        summaryTitle.style.margin = '10px 0';
-    }
-
-    const visitDetails = form.querySelector('.visit-details');
-    if (visitDetails) {
-        visitDetails.style.marginBottom = '10px';
-    }
-
-    const contentSections = form.querySelectorAll('.content-section');
-    contentSections.forEach(section => {
-        section.style.marginBottom = '10px';
-    });
-
-    const diagnosisLine = form.querySelector('.diagnosis-line');
-    if (diagnosisLine) {
-        diagnosisLine.style.margin = '10px 0';
-    }
-
-    const instructionsTitle = form.querySelector('.instructions-title');
-    if (instructionsTitle) {
-        instructionsTitle.style.marginBottom = '8px';
-    }
-
-    const medicalContent = form.querySelectorAll('.medical-content');
-    medicalContent.forEach(content => {
-        content.style.marginBottom = '10px';
-    });
-
-    const signatureSection = form.querySelector('.signature-section');
-    if (signatureSection) {
-        signatureSection.style.marginTop = '15px';
-        signatureSection.style.minHeight = 'auto';
-        signatureSection.style.height = 'auto';
-    }
-
-    const signatureText = form.querySelector('.signature-text');
-    if (signatureText) {
-        signatureText.style.marginBottom = '0px';
-    }
-
-    // בדיקה של גובה בפיקסלים
-    setTimeout(() => {
-        const formHeight = form.offsetHeight;
-        console.log('Form height:', formHeight);
-        
-        // אם הגובה גדול מ-950px, הקטן את הפונט
-        if (formHeight > 950) {
-            form.style.fontSize = '12px';
-            form.style.lineHeight = '1.3';
-            form.style.padding = '1cm 1.5cm 1cm 1.5cm';
-            
-            // בדיקה נוספת
-            setTimeout(() => {
-                const newHeight = form.offsetHeight;
-                console.log('New form height:', newHeight);
-                
-                if (newHeight > 950) {
-                    form.style.fontSize = '11px';
-                    form.style.lineHeight = '1.2';
-                    
-                    // הקטנת רווחים נוספת
-                    allElements.forEach(el => {
-                        el.style.marginBottom = '5px';
-                    });
-                }
-            }, 100);
-        }
-    }, 100);
-    // הוספת רווח לעמוד שני אם יש כזה
-
-}
     // שמירה רק לענן
     window.saveAndPrint = async function() {
         const patientName = document.getElementById('patientName').value;
@@ -1076,7 +996,6 @@ function optimizeForPrint() {
         
         // אופטימיזציה להדפסה
 // אופטימיזציה להדפסה
-optimizeForPrint();
 
 // הדפסה
 const originalTitle = document.title;
@@ -1085,29 +1004,13 @@ document.title = `סיכום_${patientName}_${dateStr}`;
 
 // הוספת עיכוב ארוך יותר כדי לוודא שהאופטימיזציה החלה
 setTimeout(() => {
-    // בדיקה אחרונה של גובה ואילוץ הקטנה אם צריך
-    const form = document.getElementById('medicalForm');
-    const formHeight = form.offsetHeight;
-    console.log('Final check - form height before print:', formHeight);
-    
-    if (formHeight > 1000) {
-        form.classList.add('compact');
-        form.style.fontSize = '11px';
-        form.style.lineHeight = '1.2';
-        form.style.padding = '1cm 1.5cm 0.5cm 1.5cm';
-        console.log('Applied compact mode');
-    }
+    window.print();
     
     setTimeout(() => {
-        window.print();
-        
-        setTimeout(() => {
-            document.title = originalTitle;
-            form.classList.remove('compact');
-            document.getElementById('clearAfterPrintBtn').classList.remove('hidden');
-        }, 1000);
-    }, 300);
-}, 500);
+        document.title = originalTitle;
+        document.getElementById('clearAfterPrintBtn').classList.remove('hidden');
+    }, 1000);
+}, 300);
     };
 
     // טעינה רק מהענן
@@ -1270,35 +1173,42 @@ setTimeout(() => {
         }, 100);
     };
 
-    window.printSummary = function(summaryId) {
-        const summary = allSummaries.find(s => s.id === summaryId);
-        if (!summary) {
-            alert('סיכום לא נמצא');
-            return;
-        }
+window.printSummary = function(summaryId) {
+    const summary = allSummaries.find(s => s.id === summaryId);
+    if (!summary) {
+        alert('סיכום לא נמצא');
+        return;
+    }
 
-        // מילוי הטופס זמנית
-        const originalValues = {
-            name: document.getElementById('patientName').value,
-            id: document.getElementById('patientId').value,
-            review: document.getElementById('medicalReview').value,
-            diagnosis: document.getElementById('diagnosis').value,
-            instructions: document.getElementById('instructions').value
-        };
+    // שמירת הערכים הנוכחיים של הטופס
+    const originalValues = {
+        name: document.getElementById('patientName').value,
+        id: document.getElementById('patientId').value,
+        review: document.getElementById('medicalReview').value,
+        diagnosis: document.getElementById('diagnosis').value,
+        instructions: document.getElementById('instructions').value
+    };
 
-        document.getElementById('patientName').value = summary.patientName || '';
-        document.getElementById('patientId').value = summary.patientId || '';
-        document.getElementById('medicalReview').value = summary.medicalReview || '';
-        document.getElementById('diagnosis').value = summary.diagnosis || '';
-        document.getElementById('instructions').value = summary.instructions || '';
+    // מילוי הטופס עם נתוני הסיכום הנבחר
+    document.getElementById('patientName').value = summary.patientName || '';
+    document.getElementById('patientId').value = summary.patientId || '';
+    document.getElementById('medicalReview').value = summary.medicalReview || '';
+    document.getElementById('diagnosis').value = summary.diagnosis || '';
+    document.getElementById('instructions').value = summary.instructions || '';
 
-        // יצירת תצוגה זמנית להדפסה
+    // **צעד קריטי**: מעבר לעמוד הסיכום החדש
+    showNewConsultation();
+    
+    // יצירת התצוגה המקדימה
+    setTimeout(() => {
         generatePreview();
         
+        // ציון שהדפסה מהיסטוריה - יש להחזיר את הערכים אחר כך
+        window.printingFromHistory = true;
+        window.originalHistoryValues = originalValues;
+        
+        // הדפסה
         setTimeout(() => {
-            // אופטימיזציה להדפסה
-            optimizeForPrint();
-            
             const originalTitle = document.title;
             document.title = `סיכום_${summary.patientName}_${new Date(summary.date).toLocaleDateString('he-IL').replace(/\//g, '-')}`;
             
@@ -1306,22 +1216,27 @@ setTimeout(() => {
                 window.print();
                 document.title = originalTitle;
                 
-                // החזרת הערכים המקוריים
-                document.getElementById('patientName').value = originalValues.name;
-                document.getElementById('patientId').value = originalValues.id;
-                document.getElementById('medicalReview').value = originalValues.review;
-                document.getElementById('diagnosis').value = originalValues.diagnosis;
-                document.getElementById('instructions').value = originalValues.instructions;
-                
-                if (originalValues.name || originalValues.id) {
-                    generatePreview();
-                } else {
-                    document.getElementById('previewContainer').classList.remove('active');
-                    document.getElementById('clearAfterPrintBtn').classList.add('hidden');
-                }
-            }, 200);
+                // חזרה לעמוד ההיסטוריה ושחזור הערכים
+                setTimeout(() => {
+                    if (window.printingFromHistory) {
+                        showHistory();
+                        
+                        // שחזור הערכים המקוריים בטופס
+                        document.getElementById('patientName').value = window.originalHistoryValues.name;
+                        document.getElementById('patientId').value = window.originalHistoryValues.id;
+                        document.getElementById('medicalReview').value = window.originalHistoryValues.review;
+                        document.getElementById('diagnosis').value = window.originalHistoryValues.diagnosis;
+                        document.getElementById('instructions').value = window.originalHistoryValues.instructions;
+                        
+                        // ניקוי משתני העזר
+                        window.printingFromHistory = false;
+                        window.originalHistoryValues = null;
+                    }
+                }, 1000);
+            }, 300);
         }, 500);
-    };
+    }, 200);
+};
 
     // Event listeners
     document.getElementById('searchInput').addEventListener('keypress', function(e) {
@@ -1343,35 +1258,95 @@ const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 if (isIOS) {
     textareas.forEach(textarea => {
         textarea.addEventListener('focus', function() {
-            this.style.textAlign = 'right';
-            this.style.direction = 'rtl';
+            if (this.id === 'diagnosis') {
+                this.style.textAlign = 'left';
+                this.style.direction = 'ltr';
+            } else {
+                this.style.textAlign = 'right';
+                this.style.direction = 'rtl';
+            }
         });
     });
 }
         textareas.forEach(textarea => {
-            textarea.addEventListener('input', function() {
-                let text = this.value;
-                let lines = text.split('\n');
-                let newLines = [];
+textarea.addEventListener('input', function() {
+    if (this.id === 'diagnosis') {
+        // עיבוד מיוחד לאבחנות
+        let text = this.value;
+        let lines = text.split('\n');
+        let newLines = [];
+        
+        lines.forEach((line, index) => {
+            // הסרת נקודות קיימות מתחילת השורה
+            line = line.replace(/^[•\-\*]\s*/, '').trim();
+            
+if (line.length > 0) {
+    // בדיקה אם כבר יש נקודה
+    if (!line.startsWith('• ')) {
+        line = '• ' + line;
+    }
+    
+    // שבירת שורות ארוכות
+    while (line.length > 95) {
+        let breakPoint = 95;
+        let lastSpace = line.lastIndexOf(' ', 95);
+        
+        if (lastSpace > 70) {
+            breakPoint = lastSpace;
+        }
+        
+        newLines.push(line.substring(0, breakPoint));
+        line = '  ' + line.substring(breakPoint).trim();
+    }
+    newLines.push(line);
+}else if (index < lines.length - 1) {
+                newLines.push(''); // שורה ריקה
+            }
+        });
+        
+        this.value = newLines.join('\n');
+    } else {
+        // עיבוד רגיל לשאר השדות (הקוד הקיים)
+        let text = this.value;
+        let lines = text.split('\n');
+        let newLines = [];
+        
+        lines.forEach(line => {
+            while (line.length > 93) {
+                let breakPoint = 93;
+                let lastSpace = line.lastIndexOf(' ', 93);
                 
-                lines.forEach(line => {
-                    while (line.length > 93) {
-                        // מוצא את המקום הטוב ביותר לשבור (רווח אחרון לפני 93)
-                        let breakPoint = 93;
-                        let lastSpace = line.lastIndexOf(' ', 93);
-                        
-                        if (lastSpace > 70) { // אם יש רווח לא רחוק מדי
-                            breakPoint = lastSpace;
-                        }
-                        
-                        newLines.push(line.substring(0, breakPoint));
-                        line = line.substring(breakPoint).trim();
-                    }
-                    newLines.push(line);
-                });
+                if (lastSpace > 70) {
+                    breakPoint = lastSpace;
+                }
                 
-                this.value = newLines.join('\n');
-            });
+                newLines.push(line.substring(0, breakPoint));
+                line = line.substring(breakPoint).trim();
+            }
+            newLines.push(line);
+        });
+        
+        this.value = newLines.join('\n');
+    }
+});
+// טיפול מיוחד בלחיצה על Enter באבחנות
+if (textarea.id === 'diagnosis') {
+    textarea.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault(); // מונע את ה-Enter הרגיל
+            
+            const cursorPos = this.selectionStart;
+            const textBefore = this.value.substring(0, cursorPos);
+            const textAfter = this.value.substring(cursorPos);
+            
+            // הוספת שורה חדשה עם נקודה
+            this.value = textBefore + '\n• ' + textAfter;
+            
+            // העברת הסמן למקום הנכון (אחרי הנקודה)
+            this.selectionStart = this.selectionEnd = cursorPos + 3;
+        }
+    });
+}
         });
     });
 </script>
