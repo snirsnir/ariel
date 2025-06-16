@@ -124,6 +124,9 @@
             font-size: 14px;
             font-family: 'Heebo', sans-serif;
             direction: rtl;
+            text-align: right;
+            -webkit-text-align: right;
+            -webkit-direction: rtl;
         }
 
         .form-group textarea {
@@ -278,36 +281,36 @@
             text-align: right;
         }
 
-.signature-section {
-    position: relative;
-    height: 3cm;
-    margin-top: 40px;
-  }
+        .signature-section {
+            position: relative;
+            height: 3cm;
+            margin-top: 40px;
+        }
 
-  .signature-text {
-    position: static !important;
-    visibility: visible !important;
-    font-weight: bold;
-    text-align: right;
-    margin-bottom: 15px;
-  }
+        .signature-text {
+            position: static !important;
+            visibility: visible !important;
+            font-weight: bold;
+            text-align: right;
+            margin-bottom: 15px;
+        }
 
-  .signature-stamp {
-    position: absolute !important;
-    bottom: 0;
-    left: 0;
-    margin-right: auto;
-    margin-left: 0;
-    width: 4cm;
-    padding: 10px;
-    font-size: 11px;
-    line-height: 1.3;
-    text-align: center;
-    border: 1px solid #333;
-    background: white;
-    visibility: visible !important;
-    box-sizing: border-box;
-  }
+        .signature-stamp {
+            position: absolute !important;
+            bottom: 0;
+            left: 0;
+            margin-right: auto;
+            margin-left: 0;
+            width: 4cm;
+            padding: 10px;
+            font-size: 11px;
+            line-height: 1.3;
+            text-align: center;
+            border: 1px solid #333;
+            background: white;
+            visibility: visible !important;
+            box-sizing: border-box;
+        }
 
         /* היסטוריה */
         .search-container {
@@ -416,126 +419,230 @@
             color: #666;
         }
 
-        @media print {
-            html, body {
-                height: 100vh;
-                overflow: hidden;
-                margin: 0;
-                padding: 0;
-                background: white;
-            }
-            
-            * {
-                visibility: hidden;
-            }
-            
-            .medical-form, .medical-form * {
-                visibility: visible !important;
-            }
-            
-            .medical-form {
-                position: fixed !important;
-                top: 0 !important;
-                left: 0 !important;
-                right: 0 !important;
-                width: 100vw !important;
-                height: 100vh !important;
-                border: none;
-                padding: 1.5cm;
-                font-size: 14px;
-                line-height: 1.4;
-                background: white;
-                overflow: hidden;
-                direction: rtl;
-                text-align: right;
-            }
-            
-            .doctor-header {
-                text-align: center;
-                margin-bottom: 20px;
-                border-bottom: 2px solid #333;
-                padding-bottom: 15px;
-            }
-            
-            .visit-info {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                margin-bottom: 20px;
-                gap: 20px;
-            }
-            
-            .visit-date {
-                text-align: left;
-            }
-            
-            .patient-info {
-                text-align: right;
-            }
-            
-            .summary-title {
-                text-align: center;
-                margin: 20px 0;
-            }
-            
-            .visit-details {
-                text-align: center;
-                margin-bottom: 15px;
-            }
-            
-            .section-title {
-                text-align: right;
-            }
-            
-            .instructions-title {
-                text-align: right;
-            }
-            
-.signature-section {
-    position: relative;
-    height: 3cm;
-    margin-top: 40px;
-  }
+        /* תיקונים מיוחדים להדפסה */
+@media print {
+    html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white !important;
+        height: auto !important;
+        overflow: visible !important;
+        font-size: 14px !important;
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+    
+    * {
+        visibility: hidden !important;
+        -webkit-box-sizing: border-box !important;
+        box-sizing: border-box !important;
+    }
+    
+    .medical-form, .medical-form * {
+        visibility: visible !important;
+    }
+    
+    .medical-form {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        max-width: none !important;
+        max-height: none !important;
+        padding: 1.2cm 1.8cm 0.8cm 1.8cm !important;
+        margin: 0 !important;
+        font-size: 13px !important;
+        line-height: 1.4 !important;
+        background: white !important;
+        border: none !important;
+        direction: rtl !important;
+        text-align: right !important;
+        overflow: visible !important;
+        box-sizing: border-box !important;
+        page-break-after: auto !important;
+        page-break-inside: auto !important;
+    }
+    
+    .doctor-header {
+        text-align: center !important;
+        margin-bottom: 15px !important;
+        border-bottom: 1px solid #333 !important;
+        padding-bottom: 10px !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+    }
+    
+    .visit-info {
+        display: flex !important;
+        justify-content: space-between !important;
+        margin-bottom: 15px !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+    }
+    
+    .visit-date {
+        text-align: left !important;
+    }
+    
+    .patient-info {
+        text-align: right !important;
+    }
+    
+    .summary-title {
+        text-align: center !important;
+        margin: 10px 0 !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+    }
+    
+    .visit-details {
+        text-align: center !important;
+        margin-bottom: 10px !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+    }
+    
+    .content-section {
+        margin-bottom: 10px !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+    
+    .section-title {
+        text-align: right !important;
+        font-weight: bold !important;
+        margin-bottom: 5px !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+    }
+    
+    .instructions-title {
+        text-align: right !important;
+        font-weight: bold !important;
+        margin-bottom: 8px !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+    }
+    
+    .medical-content {
+        margin-bottom: 10px !important;
+        text-align: right !important;
+        page-break-inside: auto !important;
+        break-inside: auto !important;
+    }
+    
+    .diagnosis-line {
+        margin: 10px 0 !important;
+        border-top: 1px solid #333 !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+    
+    .signature-section {
+        margin-top: 15px !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        min-height: auto !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
 
-  .signature-text {
-    position: static !important;
-    visibility: visible !important;
-    font-weight: bold;
-    text-align: right;
-    margin-bottom: 15px;
-  }
+    .signature-text {
+        font-weight: bold !important;
+        text-align: right !important;
+        margin-bottom: 0px !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+    .page-two-spacer {
+    height: 3cm !important;
+    page-break-before: always !important;
+    visibility: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.page-break-spacer {
+    page-break-before: always !important;
+    height: 3cm !important;
+    visibility: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+}
+@page {
+    size: A4 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
 
-  .signature-stamp {
-    position: absolute !important;
-    bottom: 0;
-    left: 0;
-    margin-right: auto;
-    margin-left: 0;
-    width: 4cm;
-    padding: 10px;
-    font-size: 11px;
-    line-height: 1.3;
-    text-align: center;
-    border: 1px solid #333;
-    background: white;
-    visibility: visible !important;
-    box-sizing: border-box;
-  }
+@page:first {
+    margin: 0 !important;
+}
 
-            
-            .medical-content {
-                margin-bottom: 10px;
-                text-align: right;
-            }
-            
-            .diagnosis-line {
-                margin: 15px 0;
-            }
-            
-            @page {
-                size: A4;
-                margin: 0;
-            }
-        }
+
+/* אילוץ עמוד יחיד */
+html {
+    max-height: 29.7cm !important;
+    overflow: hidden !important;
+}
+
+body {
+    max-height: 29.7cm !important;
+    overflow: hidden !important;
+    page-break-after: avoid !important;
+}
+    
+    .medical-form, .medical-form *, 
+    .doctor-header, .visit-info, .summary-title, 
+    .visit-details, .medical-content, .signature-section {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+        page-break-before: avoid !important;
+        break-before: avoid !important;
+    }
+    
+    .medical-form > *:not(:last-child) {
+        margin-bottom: 8px !important;
+    }
+    
+    .medical-form > *:last-child {
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+    }
+    
+    .medical-form.compact {
+        font-size: 11px !important;
+        line-height: 1.3 !important;
+    }
+    
+    .medical-form.compact .doctor-header {
+        margin-bottom: 10px !important;
+        padding-bottom: 8px !important;
+    }
+    
+    .medical-form.compact .visit-info,
+    .medical-form.compact .summary-title,
+    .medical-form.compact .visit-details,
+    .medical-form.compact .content-section,
+    .medical-form.compact .medical-content,
+    .medical-form.compact .diagnosis-line {
+        margin-bottom: 6px !important;
+    }
+    
+    .medical-form.compact .signature-section {
+        margin-top: 10px !important;
+    }
+}
 
         @media screen and (max-width: 768px) {
             .form-row {
@@ -545,6 +652,12 @@
             .main-buttons {
                 grid-template-columns: 1fr;
             }
+            .form-group textarea {
+    text-align: right !important;
+    direction: rtl !important;
+    -webkit-direction: rtl !important;
+    unicode-bidi: plaintext;
+}
             
             .visit-info,
             .signature-section {
@@ -626,7 +739,7 @@
                     
                     <div style="text-align: center; margin-top: 20px;">
                         <button class="btn success" onclick="saveAndPrint()">💾 העלה לענן והדפס</button>
-    <button id="clearAfterPrintBtn" class="btn danger hidden" onclick="clearForm()">🧹 נקה טופס</button>
+                        <button id="clearAfterPrintBtn" class="btn danger hidden" onclick="clearForm()">🧹 נקה טופס</button>
                     </div>
                 </div>
             </div>
@@ -684,518 +797,581 @@
     </div>
 
     <!-- Firebase SDKs -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-        import { getStorage, ref, uploadString, getDownloadURL, listAll, getMetadata } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-storage.js";
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+    import { getStorage, ref, uploadString, getDownloadURL, listAll } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-storage.js";
 
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCe24QH6BXEWtF2zJWcP8WhV8qKj-3l-00",
-            authDomain: "gaash-2ea82.firebaseapp.com",
-            projectId: "gaash-2ea82",
-            storageBucket: "gaash-2ea82.firebasestorage.app",
-            messagingSenderId: "1054252503536",
-            appId: "1:1054252503536:web:4b7c546bd737de696e4d35"
-        };
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyCe24QH6BXEWtF2zJWcP8WhV8qKj-3l-00",
+        authDomain: "gaash-2ea82.firebaseapp.com",
+        projectId: "gaash-2ea82",
+        storageBucket: "gaash-2ea82.firebasestorage.app",
+        messagingSenderId: "1054252503536",
+        appId: "1:1054252503536:web:4b7c546bd737de696e4d35"
+    };
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const storage = getStorage(app);
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const storage = getStorage(app);
 
-        // Global variables
-        let allSummaries = [];
-        let currentSummaries = [];
+    // Global variables
+    let allSummaries = [];
+    let currentSummaries = [];
 
-        // Navigation functions
-        window.showMain = function() {
-            hideAllSections();
-            document.getElementById('mainSection').classList.add('active');
-        };
+    // Navigation functions
+    window.showMain = function() {
+        hideAllSections();
+        document.getElementById('mainSection').classList.add('active');
+    };
 
-        window.showNewConsultation = function() {
-            hideAllSections();
-            document.getElementById('newConsultationSection').classList.add('active');
-        };
+    window.showNewConsultation = function() {
+        hideAllSections();
+        document.getElementById('newConsultationSection').classList.add('active');
+    };
 
-        window.showHistory = function() {
-            hideAllSections();
-            document.getElementById('historySection').classList.add('active');
-            loadHistory();
-        };
+    window.showHistory = function() {
+        hideAllSections();
+        document.getElementById('historySection').classList.add('active');
+        loadHistory();
+    };
 
-        function hideAllSections() {
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.remove('active');
-            });
+    function hideAllSections() {
+        document.querySelectorAll('.section').forEach(section => {
+            section.classList.remove('active');
+        });
+    }
+
+    // Form functions
+    window.generatePreview = function() {
+        const patientName = document.getElementById('patientName').value;
+        const patientId = document.getElementById('patientId').value;
+        const medicalReview = document.getElementById('medicalReview').value;
+        const diagnosis = document.getElementById('diagnosis').value;
+        const instructions = document.getElementById('instructions').value;
+
+        if (!patientName || !patientId) {
+            alert('יש למלא לפחות שם מטופל ותעודת זהות');
+            return;
         }
 
-        // Form functions
-        window.generatePreview = function() {
-            const patientName = document.getElementById('patientName').value;
-            const patientId = document.getElementById('patientId').value;
-            const medicalReview = document.getElementById('medicalReview').value;
-            const diagnosis = document.getElementById('diagnosis').value;
-            const instructions = document.getElementById('instructions').value;
+        const today = new Date().toLocaleDateString('he-IL');
+        
+        const formHtml = `
+            <div class="doctor-header">
+                <div class="doctor-name">ד"ר אריאל כץ</div>
+                <div class="doctor-title">מומחה ומנתח אא"ג</div>
+                <div class="doctor-license">מ.ר. 38091 מ.ר.מ 30570</div>
+                <div class="clinic-info">מרפאת מרום, אמנון ותמר 6 נתניה, טלפון - 074-705-0889</div>
+            </div>
 
-            if (!patientName || !patientId) {
-                alert('יש למלא לפחות שם מטופל ותעודת זהות');
-                return;
-            }
-
-            const today = new Date().toLocaleDateString('he-IL');
-            
-            const formHtml = `
-                <div class="doctor-header">
-                    <div class="doctor-name">ד"ר אריאל כץ</div>
-                    <div class="doctor-title">מומחה ומנתח אא"ג</div>
-                    <div class="doctor-license">מ.ר. 38091 מ.ר.מ 30570</div>
-                    <div class="clinic-info">מרפאת מרום, אמנון ותמר 6 נתניה, טלפון - 074-705-0889</div>
+            <div class="visit-info">
+                <div class="patient-info">
+                    <div class="patient-name">${patientName}</div>
+                    <div class="patient-id">ת"ז ${patientId}</div>
                 </div>
+                <div class="visit-date">${today}</div>
+            </div>
 
-                <div class="visit-info">
-                    <div class="patient-info">
-                        <div class="patient-name">${patientName}</div>
-                        <div class="patient-id">ת"ז ${patientId}</div>
-                    </div>
-                    <div class="visit-date">${today}</div>
-                </div>
+            <div class="summary-title">סיכום ייעוץ רפואי</div>
 
-                <div class="summary-title">סיכום ייעוץ רפואי</div>
+            <div class="visit-details">
+                ביקור שנערך בנתניה בתאריך ${today}
+            </div>
 
-                <div class="visit-details">
-                    ביקור שנערך בנתניה בתאריך ${today}
-                </div>
+            <div class="medical-content">
+                ${medicalReview ? `<div class="content-section">
+                    <div class="section-title">סקירה:</div>
+                    <div>${medicalReview.replace(/\n/g, '<br>')}</div>
+                </div>` : ''}
 
-                <div class="medical-content">
-                    ${medicalReview ? `<div class="content-section">
-                        <div class="section-title">סקירה:</div>
-                        <div>${medicalReview.replace(/\n/g, '<br>')}</div>
-                    </div>` : ''}
+                ${diagnosis ? `<div class="content-section">
+                    <div class="section-title">אבחנות:</div>
+                    <div>${diagnosis.replace(/\n/g, '<br>')}</div>
+                </div>` : ''}
+            </div>
 
-                    ${diagnosis ? `<div class="content-section">
-                        <div class="section-title">אבחנות:</div>
-                        <div>${diagnosis.replace(/\n/g, '<br>')}</div>
-                    </div>` : ''}
-                </div>
+            <div class="diagnosis-line"></div>
 
-                <div class="diagnosis-line"></div>
-
-                <div class="instructions-title">הנחיות:</div>
-                <div class="medical-content">
-                    ${instructions ? instructions.replace(/\n/g, '<br>') : ''}
-                </div>
+            <div class="instructions-title">הנחיות:</div>
+            <div class="medical-content">
+                ${instructions ? instructions.replace(/\n/g, '<br>') : ''}
+            </div>
 
 <div class="signature-section">
-  <div class="signature-text" style="text-align: right; margin-bottom: 10px;">
-    בברכה,<br>ד"ר אריאל כץ
-  </div>
-  <div class="signature-stamp">
-    ד"ר אריאל כץ<br>
-    מומחה ומנתח אא"ג<br>
-    מ.ר. 38091 מ.ר.מ 30570
-  </div>
+    <div class="signature-text">
+        בברכה,<br>ד"ר אריאל כץ
+    </div>
 </div>
 
-            `;
+<div class="page-break-spacer" style="page-break-before: always; height: 3cm; visibility: hidden; margin: 0; padding: 0;"></div>
+        `;
 
-            document.getElementById('medicalForm').innerHTML = formHtml;
-            document.getElementById('previewContainer').classList.add('active');
+        document.getElementById('medicalForm').innerHTML = formHtml;
+        document.getElementById('previewContainer').classList.add('active');
+        
+        // גלילה לתצוגה המקדימה
+        document.getElementById('previewContainer').scrollIntoView({ behavior: 'smooth' });
+    };
+
+    window.clearForm = function() {
+        document.getElementById('patientName').value = '';
+        document.getElementById('patientId').value = '';
+        document.getElementById('medicalReview').value = '';
+        document.getElementById('diagnosis').value = '';
+        document.getElementById('instructions').value = '';
+        document.getElementById('previewContainer').classList.remove('active');
+        document.getElementById('clearAfterPrintBtn').classList.add('hidden');
+    };
+
+    // פונקציה מיוחדת להכנת הדפסה - מניעת עמוד שני
+function optimizeForPrint() {
+    const form = document.getElementById('medicalForm');
+    if (!form) return;
+
+    // איפוס סגנונות קודמים
+    form.style.fontSize = '';
+    form.style.lineHeight = '';
+    form.style.padding = '';
+
+    // הגדרות בסיסיות להדפסה
+    form.style.maxHeight = 'none';
+    form.style.overflow = 'visible';
+
+    // הסרת כל הרווחים הגדולים
+    const allElements = form.querySelectorAll('*');
+    allElements.forEach(el => {
+        el.style.marginBottom = '10px';
+        el.style.paddingBottom = '0px';
+    });
+
+    // הקטנת רווחים ספציפיים
+    const doctorHeader = form.querySelector('.doctor-header');
+    if (doctorHeader) {
+        doctorHeader.style.marginBottom = '15px';
+        doctorHeader.style.paddingBottom = '10px';
+    }
+
+    const visitInfo = form.querySelector('.visit-info');
+    if (visitInfo) {
+        visitInfo.style.marginBottom = '15px';
+    }
+
+    const summaryTitle = form.querySelector('.summary-title');
+    if (summaryTitle) {
+        summaryTitle.style.margin = '10px 0';
+    }
+
+    const visitDetails = form.querySelector('.visit-details');
+    if (visitDetails) {
+        visitDetails.style.marginBottom = '10px';
+    }
+
+    const contentSections = form.querySelectorAll('.content-section');
+    contentSections.forEach(section => {
+        section.style.marginBottom = '10px';
+    });
+
+    const diagnosisLine = form.querySelector('.diagnosis-line');
+    if (diagnosisLine) {
+        diagnosisLine.style.margin = '10px 0';
+    }
+
+    const instructionsTitle = form.querySelector('.instructions-title');
+    if (instructionsTitle) {
+        instructionsTitle.style.marginBottom = '8px';
+    }
+
+    const medicalContent = form.querySelectorAll('.medical-content');
+    medicalContent.forEach(content => {
+        content.style.marginBottom = '10px';
+    });
+
+    const signatureSection = form.querySelector('.signature-section');
+    if (signatureSection) {
+        signatureSection.style.marginTop = '15px';
+        signatureSection.style.minHeight = 'auto';
+        signatureSection.style.height = 'auto';
+    }
+
+    const signatureText = form.querySelector('.signature-text');
+    if (signatureText) {
+        signatureText.style.marginBottom = '0px';
+    }
+
+    // בדיקה של גובה בפיקסלים
+    setTimeout(() => {
+        const formHeight = form.offsetHeight;
+        console.log('Form height:', formHeight);
+        
+        // אם הגובה גדול מ-950px, הקטן את הפונט
+        if (formHeight > 950) {
+            form.style.fontSize = '12px';
+            form.style.lineHeight = '1.3';
+            form.style.padding = '1cm 1.5cm 1cm 1.5cm';
             
-            // גלילה לתצוגה המקדימה
-            document.getElementById('previewContainer').scrollIntoView({ behavior: 'smooth' });
-        };
+            // בדיקה נוספת
+            setTimeout(() => {
+                const newHeight = form.offsetHeight;
+                console.log('New form height:', newHeight);
+                
+                if (newHeight > 950) {
+                    form.style.fontSize = '11px';
+                    form.style.lineHeight = '1.2';
+                    
+                    // הקטנת רווחים נוספת
+                    allElements.forEach(el => {
+                        el.style.marginBottom = '5px';
+                    });
+                }
+            }, 100);
+        }
+    }, 100);
+    // הוספת רווח לעמוד שני אם יש כזה
 
-window.clearForm = function() {
-    document.getElementById('patientName').value = '';
-    document.getElementById('patientId').value = '';
-    document.getElementById('medicalReview').value = '';
-    document.getElementById('diagnosis').value = '';
-    document.getElementById('instructions').value = '';
-    document.getElementById('previewContainer').classList.remove('active');
-    document.getElementById('clearAfterPrintBtn').classList.add('hidden');
-};
+}
+    // שמירה רק לענן
+    window.saveAndPrint = async function() {
+        const patientName = document.getElementById('patientName').value;
+        const patientId = document.getElementById('patientId').value;
+        const medicalReview = document.getElementById('medicalReview').value;
+        const diagnosis = document.getElementById('diagnosis').value;
+        const instructions = document.getElementById('instructions').value;
 
+        if (!patientName || !patientId) {
+            alert('יש למלא לפחות שם מטופל ותעודת זהות');
+            return;
+        }
 
-        window.saveAndPrint = async function() {
-            const patientName = document.getElementById('patientName').value;
-            const patientId = document.getElementById('patientId').value;
-            const medicalReview = document.getElementById('medicalReview').value;
-            const diagnosis = document.getElementById('diagnosis').value;
-            const instructions = document.getElementById('instructions').value;
+        try {
+            // יצירת שם קובץ עם תאריך ושעה
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('he-IL').replace(/\//g, '-');
+            const timeStr = now.toLocaleTimeString('he-IL', {hour: '2-digit', minute: '2-digit'}).replace(/:/g, '-');
+            const fileName = `${patientName}_${patientId}_${dateStr}_${timeStr}.json`;
 
-            if (!patientName || !patientId) {
-                alert('יש למלא לפחות שם מטופל ותעודת זהות');
+            // יצירת נתונים לשמירה
+            const summaryData = {
+                patientName: patientName,
+                patientId: patientId,
+                medicalReview: medicalReview,
+                diagnosis: diagnosis,
+                instructions: instructions,
+                date: now.toISOString(),
+                dateString: now.toLocaleDateString('he-IL'),
+                timeString: now.toLocaleTimeString('he-IL')
+            };
+
+            // שמירה בענן בלבד
+            const storageRef = ref(storage, `ariel/${fileName}`);
+            await uploadString(storageRef, JSON.stringify(summaryData), 'raw');
+
+            alert('הסיכום נשמר בענן בהצלחה! ✅');
+            
+        } catch (error) {
+            console.error('שגיאה בשמירה:', error);
+            alert('⚠️ שגיאה בשמירה לענן. נסה שוב.');
+            return;
+        }
+        
+        // אופטימיזציה להדפסה
+// אופטימיזציה להדפסה
+optimizeForPrint();
+
+// הדפסה
+const originalTitle = document.title;
+const dateStr = new Date().toLocaleDateString('he-IL').replace(/\//g, '-');
+document.title = `סיכום_${patientName}_${dateStr}`;
+
+// הוספת עיכוב ארוך יותר כדי לוודא שהאופטימיזציה החלה
+setTimeout(() => {
+    // בדיקה אחרונה של גובה ואילוץ הקטנה אם צריך
+    const form = document.getElementById('medicalForm');
+    const formHeight = form.offsetHeight;
+    console.log('Final check - form height before print:', formHeight);
+    
+    if (formHeight > 1000) {
+        form.classList.add('compact');
+        form.style.fontSize = '11px';
+        form.style.lineHeight = '1.2';
+        form.style.padding = '1cm 1.5cm 0.5cm 1.5cm';
+        console.log('Applied compact mode');
+    }
+    
+    setTimeout(() => {
+        window.print();
+        
+        setTimeout(() => {
+            document.title = originalTitle;
+            form.classList.remove('compact');
+            document.getElementById('clearAfterPrintBtn').classList.remove('hidden');
+        }, 1000);
+    }, 300);
+}, 500);
+    };
+
+    // טעינה רק מהענן
+    async function loadHistory() {
+        try {
+            document.getElementById('loadingHistory').classList.remove('hidden');
+            document.getElementById('historyTable').classList.add('hidden');
+            document.getElementById('statsSection').classList.add('hidden');
+            document.getElementById('emptyState').classList.add('hidden');
+
+            allSummaries = [];
+
+            // טעינה מהענן דרך CORS Proxy
+            try {
+                const listRef = ref(storage, 'ariel/');
+                const result = await listAll(listRef);
+                
+                for (const itemRef of result.items) {
+                    try {
+                        // קבלת URL ישיר
+                        const url = await getDownloadURL(itemRef);
+                        
+                        // שימוש ב-corsproxy.io
+                        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+                        const response = await fetch(proxyUrl);
+                        const text = await response.text();
+                        const data = JSON.parse(text);
+                        
+                        data.id = itemRef.name;
+                        data.isCloud = true;
+                        allSummaries.push(data);
+                    } catch (fileError) {
+                        console.log(`לא ניתן לטעון קובץ ${itemRef.name}, ממשיך...`);
+                    }
+                }
+                
+                if (allSummaries.length > 0) {
+                    console.log(`נטענו ${allSummaries.length} סיכומים מהענן`);
+                }
+            } catch (cloudError) {
+                console.error('שגיאה בטעינה מהענן:', cloudError);
+                document.getElementById('loadingHistory').innerHTML = 
+                    '<div style="color: #e74c3c;">❌ שגיאה בחיבור לענן</div>';
                 return;
             }
 
-            try {
-                // יצירת שם קובץ עם תאריך ושעה
-                const now = new Date();
-                const dateStr = now.toLocaleDateString('he-IL').replace(/\//g, '-');
-                const timeStr = now.toLocaleTimeString('he-IL', {hour: '2-digit', minute: '2-digit'}).replace(/:/g, '-');
-                const fileName = `${patientName}_${patientId}_${dateStr}_${timeStr}.json`;
+            // מיון לפי תאריך
+            allSummaries.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            currentSummaries = allSummaries;
+            displayHistory();
+            updateStats();
 
-                // יצירת נתונים לשמירה
-                const summaryData = {
-                    patientName: patientName,
-                    patientId: patientId,
-                    medicalReview: medicalReview,
-                    diagnosis: diagnosis,
-                    instructions: instructions,
-                    date: now.toISOString(),
-                    dateString: now.toLocaleDateString('he-IL'),
-                    timeString: now.toLocaleTimeString('he-IL')
-                };
-
-                // שמירה ב-Storage במקום Firestore
-                const storageRef = ref(storage, `ariel/${fileName}`);
-                await uploadString(storageRef, JSON.stringify(summaryData), 'raw');
-
-                alert('הסיכום נשמר בהצלחה! ✅');
-                
-                // שמירה מקומית כגיבוי
-                saveToLocalStorage(summaryData);
-                
-                // הדפסה
-                const originalTitle = document.title;
-                document.title = `סיכום_${patientName}_${dateStr}`;
-
-                window.print();
-
- setTimeout(() => {
-    document.title = originalTitle;
-    // הצגת כפתור הניקוי אחרי ההדפסה
-    document.getElementById('clearAfterPrintBtn').classList.remove('hidden');
-}, 1000);
-                
-                // ניקוי הטופס
-                
-                
-            } catch (error) {
-                console.error('שגיאה בשמירה:', error);
-                
-                // שמירה מקומית בלבד
-                const summaryData = {
-                    patientName: patientName,
-                    patientId: patientId,
-                    medicalReview: medicalReview,
-                    diagnosis: diagnosis,
-                    instructions: instructions,
-                    date: new Date().toISOString(),
-                    dateString: new Date().toLocaleDateString('he-IL'),
-                    timeString: new Date().toLocaleTimeString('he-IL'),
-                    isLocal: true
-                };
-                
-                saveToLocalStorage(summaryData);
-                alert('⚠️ שגיאה בחיבור לענן, הסיכום נשמר מקומית');
-                
-                // הדפסה
-                window.print();
+            document.getElementById('loadingHistory').classList.add('hidden');
+            
+            if (allSummaries.length > 0) {
+                document.getElementById('historyTable').classList.remove('hidden');
+                document.getElementById('statsSection').classList.remove('hidden');
+            } else {
+                document.getElementById('emptyState').classList.remove('hidden');
             }
-        };
 
-        function saveToLocalStorage(data) {
-            try {
-                const existing = JSON.parse(localStorage.getItem('medicalSummaries') || '[]');
-                existing.unshift(data); // הוספה בתחילת הרשימה
-                localStorage.setItem('medicalSummaries', JSON.stringify(existing));
-            } catch (error) {
-                console.error('שגיאה בשמירה מקומית:', error);
-            }
+        } catch (error) {
+            console.error('שגיאה בטעינת ההיסטוריה:', error);
+            document.getElementById('loadingHistory').innerHTML = 
+                '<div style="color: #e74c3c;">❌ שגיאה בטעינת ההיסטוריה</div>';
+        }
+    }
+
+    function displayHistory() {
+        const tbody = document.getElementById('historyBody');
+        tbody.innerHTML = '';
+
+        currentSummaries.forEach((summary) => {
+            const row = document.createElement('tr');
+            const date = new Date(summary.date).toLocaleDateString('he-IL');
+            const time = summary.timeString || new Date(summary.date).toLocaleTimeString('he-IL', {hour: '2-digit', minute: '2-digit'});
+            
+            row.innerHTML = `
+                <td>${date} ${time} ☁️</td>
+                <td>${summary.patientName || 'לא זמין'}</td>
+                <td>${summary.patientId || 'לא זמין'}</td>
+                <td class="actions">
+                    <button class="btn" onclick="viewSummary('${summary.id}')">👁️ צפייה</button>
+                    <button class="btn success" onclick="printSummary('${summary.id}')">🖨️ הדפסה</button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+        
+        if (currentSummaries.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = '<td colspan="4" style="text-align: center; padding: 30px; color: #666;">אין סיכומים להצגה</td>';
+            tbody.appendChild(row);
+        }
+    }
+
+    function updateStats() {
+        const total = allSummaries.length;
+        const thisMonth = allSummaries.filter(s => {
+            const summaryDate = new Date(s.date);
+            const now = new Date();
+            return summaryDate.getMonth() === now.getMonth() && 
+                   summaryDate.getFullYear() === now.getFullYear();
+        }).length;
+        
+        const latest = allSummaries.length > 0 ? 
+            new Date(allSummaries[0].date).toLocaleDateString('he-IL') : '-';
+
+        document.getElementById('totalSummaries').textContent = total;
+        document.getElementById('thisMonth').textContent = thisMonth;
+        document.getElementById('latestDate').textContent = latest;
+    }
+
+    window.searchSummaries = function() {
+        const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+        
+        if (!searchTerm) {
+            currentSummaries = allSummaries;
+        } else {
+            currentSummaries = allSummaries.filter(summary => 
+                (summary.patientName && summary.patientName.toLowerCase().includes(searchTerm)) ||
+                (summary.patientId && summary.patientId.includes(searchTerm))
+            );
+        }
+        
+        displayHistory();
+        
+        if (currentSummaries.length > 0) {
+            document.getElementById('historyTable').classList.remove('hidden');
+            document.getElementById('emptyState').classList.add('hidden');
+        } else {
+            document.getElementById('historyTable').classList.add('hidden');
+            document.getElementById('emptyState').classList.remove('hidden');
+            document.querySelector('.empty-state h3').textContent = '🔍 לא נמצאו תוצאות';
+            document.querySelector('.empty-state p').textContent = 'נסה לחפש במילות מפתח אחרות';
+        }
+    };
+
+    window.viewSummary = function(summaryId) {
+        const summary = allSummaries.find(s => s.id === summaryId);
+        if (!summary) {
+            alert('סיכום לא נמצא');
+            return;
         }
 
-        // History functions
-        async function loadHistory() {
-            try {
-                document.getElementById('loadingHistory').classList.remove('hidden');
-                document.getElementById('historyTable').classList.add('hidden');
-                document.getElementById('statsSection').classList.add('hidden');
-                document.getElementById('emptyState').classList.add('hidden');
+        // מילוי הטופס עם הנתונים הקיימים
+        document.getElementById('patientName').value = summary.patientName || '';
+        document.getElementById('patientId').value = summary.patientId || '';
+        document.getElementById('medicalReview').value = summary.medicalReview || '';
+        document.getElementById('diagnosis').value = summary.diagnosis || '';
+        document.getElementById('instructions').value = summary.instructions || '';
 
-                allSummaries = [];
+        // עבור לעמוד החדש וצור תצוגה מקדימה
+        showNewConsultation();
+        setTimeout(() => {
+            generatePreview();
+            // גלילה לתצוגה המקדימה
+            document.getElementById('previewContainer').scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+    };
 
-                // טעינה מ-Storage
-                try {
-                    const listRef = ref(storage, 'ariel/');
-                    const result = await listAll(listRef);
-                    
-                    for (const itemRef of result.items) {
-                        try {
-                                                       const url = await getDownloadURL(itemRef);
-                           const response = await fetch(url);
-                           const data = await response.json();
-                           data.id = itemRef.name;
-                           data.isCloud = true;
-                           allSummaries.push(data);
-                       } catch (error) {
-                           console.error(`Error loading ${itemRef.name}:`, error);
-                       }
-                   }
-               } catch (cloudError) {
-                   console.log('שגיאה בטעינה מהענן:', cloudError);
-               }
+    window.printSummary = function(summaryId) {
+        const summary = allSummaries.find(s => s.id === summaryId);
+        if (!summary) {
+            alert('סיכום לא נמצא');
+            return;
+        }
 
-               // טעינה מקומית
-               try {
-                   const localData = JSON.parse(localStorage.getItem('medicalSummaries') || '[]');
-                   localData.forEach((item, index) => {
-                       item.id = `local_${index}`;
-                       item.isLocal = true;
-                       allSummaries.push(item);
-                   });
-               } catch (localError) {
-                   console.error('שגיאה בטעינה מקומית:', localError);
-               }
+        // מילוי הטופס זמנית
+        const originalValues = {
+            name: document.getElementById('patientName').value,
+            id: document.getElementById('patientId').value,
+            review: document.getElementById('medicalReview').value,
+            diagnosis: document.getElementById('diagnosis').value,
+            instructions: document.getElementById('instructions').value
+        };
 
-               // מיון לפי תאריך
-               allSummaries.sort((a, b) => new Date(b.date) - new Date(a.date));
-               
-               currentSummaries = allSummaries;
-               displayHistory();
-               updateStats();
+        document.getElementById('patientName').value = summary.patientName || '';
+        document.getElementById('patientId').value = summary.patientId || '';
+        document.getElementById('medicalReview').value = summary.medicalReview || '';
+        document.getElementById('diagnosis').value = summary.diagnosis || '';
+        document.getElementById('instructions').value = summary.instructions || '';
 
-               document.getElementById('loadingHistory').classList.add('hidden');
-               
-               if (allSummaries.length > 0) {
-                   document.getElementById('historyTable').classList.remove('hidden');
-                   document.getElementById('statsSection').classList.remove('hidden');
-               } else {
-                   document.getElementById('emptyState').classList.remove('hidden');
-               }
-
-           } catch (error) {
-               console.error('שגיאה בטעינת ההיסטוריה:', error);
-               document.getElementById('loadingHistory').innerHTML = 
-                   '<div style="color: #e74c3c;">❌ שגיאה בטעינת ההיסטוריה</div>';
-           }
-       }
-
-       function displayHistory() {
-           const tbody = document.getElementById('historyBody');
-           tbody.innerHTML = '';
-
-           currentSummaries.forEach((summary) => {
-               const row = document.createElement('tr');
-               const date = new Date(summary.date).toLocaleDateString('he-IL');
-               const time = summary.timeString || new Date(summary.date).toLocaleTimeString('he-IL', {hour: '2-digit', minute: '2-digit'});
-               const statusIcon = summary.isLocal ? '💾' : '☁️';
-               const statusTitle = summary.isLocal ? 'שמור מקומית' : 'שמור בענן';
-               
-               row.innerHTML = `
-                   <td>${date} ${time} ${statusIcon}</td>
-                   <td>${summary.patientName || 'לא זמין'}</td>
-                   <td>${summary.patientId || 'לא זמין'}</td>
-                   <td class="actions">
-                       <button class="btn" onclick="viewSummary('${summary.id}')" title="${statusTitle}">👁️ צפייה</button>
-                       <button class="btn success" onclick="printSummary('${summary.id}')">🖨️ הדפסה</button>
-                       ${summary.isLocal ? `<button class="btn" onclick="uploadToCloud('${summary.id}')">📤 העלה</button>` : ''}
-                   </td>
-               `;
-               tbody.appendChild(row);
-           });
-           
-           if (currentSummaries.length === 0) {
-               const row = document.createElement('tr');
-               row.innerHTML = '<td colspan="4" style="text-align: center; padding: 30px; color: #666;">אין סיכומים להצגה</td>';
-               tbody.appendChild(row);
-           }
-       }
-
-       function updateStats() {
-           const total = allSummaries.length;
-           const thisMonth = allSummaries.filter(s => {
-               const summaryDate = new Date(s.date);
-               const now = new Date();
-               return summaryDate.getMonth() === now.getMonth() && 
-                      summaryDate.getFullYear() === now.getFullYear();
-           }).length;
-           
-           const latest = allSummaries.length > 0 ? 
-               new Date(allSummaries[0].date).toLocaleDateString('he-IL') : '-';
-
-           document.getElementById('totalSummaries').textContent = total;
-           document.getElementById('thisMonth').textContent = thisMonth;
-           document.getElementById('latestDate').textContent = latest;
-       }
-
-       window.searchSummaries = function() {
-           const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
-           
-           if (!searchTerm) {
-               currentSummaries = allSummaries;
-           } else {
-               currentSummaries = allSummaries.filter(summary => 
-                   (summary.patientName && summary.patientName.toLowerCase().includes(searchTerm)) ||
-                   (summary.patientId && summary.patientId.includes(searchTerm))
-               );
-           }
-           
-           displayHistory();
-           
-           if (currentSummaries.length > 0) {
-               document.getElementById('historyTable').classList.remove('hidden');
-               document.getElementById('emptyState').classList.add('hidden');
-           } else {
-               document.getElementById('historyTable').classList.add('hidden');
-               document.getElementById('emptyState').classList.remove('hidden');
-               document.querySelector('.empty-state h3').textContent = '🔍 לא נמצאו תוצאות';
-               document.querySelector('.empty-state p').textContent = 'נסה לחפש במילות מפתח אחרות';
-           }
-       };
-
-       window.viewSummary = function(summaryId) {
-           const summary = allSummaries.find(s => s.id === summaryId);
-           if (!summary) {
-               alert('סיכום לא נמצא');
-               return;
-           }
-
-           // מילוי הטופס עם הנתונים הקיימים
-           document.getElementById('patientName').value = summary.patientName || '';
-           document.getElementById('patientId').value = summary.patientId || '';
-           document.getElementById('medicalReview').value = summary.medicalReview || '';
-           document.getElementById('diagnosis').value = summary.diagnosis || '';
-           document.getElementById('instructions').value = summary.instructions || '';
-
-           // עבור לעמוד החדש וצור תצוגה מקדימה
-           showNewConsultation();
-           setTimeout(() => {
-               generatePreview();
-               // גלילה לתצוגה המקדימה
-               document.getElementById('previewContainer').scrollIntoView({ behavior: 'smooth' });
-           }, 100);
-       };
-
-       window.printSummary = function(summaryId) {
-           const summary = allSummaries.find(s => s.id === summaryId);
-           if (!summary) {
-               alert('סיכום לא נמצא');
-               return;
-           }
-
-           // מילוי הטופס זמנית
-           const originalValues = {
-               name: document.getElementById('patientName').value,
-               id: document.getElementById('patientId').value,
-               review: document.getElementById('medicalReview').value,
-               diagnosis: document.getElementById('diagnosis').value,
-               instructions: document.getElementById('instructions').value
-           };
-
-           document.getElementById('patientName').value = summary.patientName || '';
-           document.getElementById('patientId').value = summary.patientId || '';
-           document.getElementById('medicalReview').value = summary.medicalReview || '';
-           document.getElementById('diagnosis').value = summary.diagnosis || '';
-           document.getElementById('instructions').value = summary.instructions || '';
-
-           // יצירת תצוגה זמנית להדפסה
-           generatePreview();
-           
-           setTimeout(() => {
-               const originalTitle = document.title;
-               document.title = `סיכום_${summary.patientName}_${new Date(summary.date).toLocaleDateString('he-IL').replace(/\//g, '-')}`;
-               window.print();
-               document.title = originalTitle;
-               
-               // החזרת הערכים המקוריים
-               document.getElementById('patientName').value = originalValues.name;
-               document.getElementById('patientId').value = originalValues.id;
-               document.getElementById('medicalReview').value = originalValues.review;
-               document.getElementById('diagnosis').value = originalValues.diagnosis;
-               document.getElementById('instructions').value = originalValues.instructions;
-               
-               if (originalValues.name || originalValues.id) {
-                   generatePreview();
-               } else {
-                   document.getElementById('previewContainer').classList.remove('active');
-                   document.getElementById('clearAfterPrintBtn').classList.add('hidden');
-               }
-           }, 500);
-       };
-
-       window.uploadToCloud = async function(localId) {
-           const summary = allSummaries.find(s => s.id === localId && s.isLocal);
-           if (!summary) {
-               alert('סיכום מקומי לא נמצא');
-               return;
-           }
-
-           try {
-               const now = new Date();
-               const dateStr = now.toLocaleDateString('he-IL').replace(/\//g, '-');
-               const timeStr = now.toLocaleTimeString('he-IL', {hour: '2-digit', minute: '2-digit'}).replace(/:/g, '-');
-               const fileName = `${summary.patientName}_${summary.patientId}_${dateStr}_${timeStr}.json`;
-
-               const cloudData = {
-                   patientName: summary.patientName,
-                   patientId: summary.patientId,
-                   medicalReview: summary.medicalReview,
-                   diagnosis: summary.diagnosis,
-                   instructions: summary.instructions,
-                   date: summary.date,
-                   dateString: summary.dateString,
-                   timeString: summary.timeString
-               };
-
-               const storageRef = ref(storage, `ariel/${fileName}`);
-               await uploadString(storageRef, JSON.stringify(cloudData), 'raw');
-
-               // הסרה מהאחסון המקומי
-               const localData = JSON.parse(localStorage.getItem('medicalSummaries') || '[]');
-               const updatedLocal = localData.filter((item, index) => `local_${index}` !== localId);
-               localStorage.setItem('medicalSummaries', JSON.stringify(updatedLocal));
-
-               alert('הסיכום הועלה לענן בהצלחה! ✅');
-               loadHistory(); // רענון הרשימה
-               
-           } catch (error) {
-               console.error('שגיאה בהעלאה:', error);
-               alert('שגיאה בהעלאה לענן. נסה שוב מאוחר יותר.');
-           }
-       };
-
-       // Event listeners
-       document.getElementById('searchInput').addEventListener('keypress', function(e) {
-           if (e.key === 'Enter') {
-               searchSummaries();
-           }
-       });
-
-       // טעינה אוטומטית של הרשימה כשהעמוד נטען
-       window.addEventListener('load', function() {
-           console.log('מערכת סיכומי ייעוץ רפואי מוכנה לשימוש');
-       });
-// הוסף את זה לקוד שלך
-document.addEventListener('DOMContentLoaded', function() {
-    const textareas = document.querySelectorAll('textarea');
-    
-    textareas.forEach(textarea => {
-        textarea.addEventListener('input', function() {
-            let text = this.value;
-            let lines = text.split('\n');
-            let newLines = [];
+        // יצירת תצוגה זמנית להדפסה
+        generatePreview();
+        
+        setTimeout(() => {
+            // אופטימיזציה להדפסה
+            optimizeForPrint();
             
-            lines.forEach(line => {
-                while (line.length > 93) {
-                    // מוצא את המקום הטוב ביותר לשבור (רווח אחרון לפני 93)
-                    let breakPoint = 93;
-                    let lastSpace = line.lastIndexOf(' ', 93);
-                    
-                    if (lastSpace > 70) { // אם יש רווח לא רחוק מדי
-                        breakPoint = lastSpace;
-                    }
-                    
-                    newLines.push(line.substring(0, breakPoint));
-                    line = line.substring(breakPoint).trim();
+            const originalTitle = document.title;
+            document.title = `סיכום_${summary.patientName}_${new Date(summary.date).toLocaleDateString('he-IL').replace(/\//g, '-')}`;
+            
+            setTimeout(() => {
+                window.print();
+                document.title = originalTitle;
+                
+                // החזרת הערכים המקוריים
+                document.getElementById('patientName').value = originalValues.name;
+                document.getElementById('patientId').value = originalValues.id;
+                document.getElementById('medicalReview').value = originalValues.review;
+                document.getElementById('diagnosis').value = originalValues.diagnosis;
+                document.getElementById('instructions').value = originalValues.instructions;
+                
+                if (originalValues.name || originalValues.id) {
+                    generatePreview();
+                } else {
+                    document.getElementById('previewContainer').classList.remove('active');
+                    document.getElementById('clearAfterPrintBtn').classList.add('hidden');
                 }
-                newLines.push(line);
-            });
-            
-            this.value = newLines.join('\n');
+            }, 200);
+        }, 500);
+    };
+
+    // Event listeners
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            searchSummaries();
+        }
+    });
+
+    // טעינה אוטומטית של הרשימה כשהעמוד נטען
+    window.addEventListener('load', function() {
+        console.log('מערכת סיכומי ייעוץ רפואי מוכנה לשימוש');
+    });
+
+    // הוסף את זה לקוד שלך
+    document.addEventListener('DOMContentLoaded', function() {
+        const textareas = document.querySelectorAll('textarea');
+        // תיקון לאייפון
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+if (isIOS) {
+    textareas.forEach(textarea => {
+        textarea.addEventListener('focus', function() {
+            this.style.textAlign = 'right';
+            this.style.direction = 'rtl';
         });
     });
-});
-   </script>
-</body>
-</html>
+}
+        textareas.forEach(textarea => {
+            textarea.addEventListener('input', function() {
+                let text = this.value;
+                let lines = text.split('\n');
+                let newLines = [];
+                
+                lines.forEach(line => {
+                    while (line.length > 93) {
+                        // מוצא את המקום הטוב ביותר לשבור (רווח אחרון לפני 93)
+                        let breakPoint = 93;
+                        let lastSpace = line.lastIndexOf(' ', 93);
+                        
+                        if (lastSpace > 70) { // אם יש רווח לא רחוק מדי
+                            breakPoint = lastSpace;
+                        }
+                        
+                        newLines.push(line.substring(0, breakPoint));
+                        line = line.substring(breakPoint).trim();
+                    }
+                    newLines.push(line);
+                });
+                
+                this.value = newLines.join('\n');
+            });
+        });
+    });
+</script>
