@@ -906,10 +906,30 @@
             <div class="auth-subtitle">נא להזין קוד כניסה בן 4 ספרות</div>
             
 <div class="pin-input">
-    <input type="password" maxlength="1" class="pin-digit" id="pin1">
-    <input type="password" maxlength="1" class="pin-digit" id="pin2">
-    <input type="password" maxlength="1" class="pin-digit" id="pin3">
-    <input type="password" maxlength="1" class="pin-digit" id="pin4">
+    <input type="password" 
+           maxlength="1" 
+           class="pin-digit" 
+           id="pin1"
+           inputmode="numeric" 
+           pattern="[0-9]*">
+    <input type="password" 
+           maxlength="1" 
+           class="pin-digit" 
+           id="pin2"
+           inputmode="numeric" 
+           pattern="[0-9]*">
+    <input type="password" 
+           maxlength="1" 
+           class="pin-digit" 
+           id="pin3"
+           inputmode="numeric" 
+           pattern="[0-9]*">
+    <input type="password" 
+           maxlength="1" 
+           class="pin-digit" 
+           id="pin4"
+           inputmode="numeric" 
+           pattern="[0-9]*">
 </div>
             
             <button class="auth-button" id="loginBtn" onclick="attemptLogin()">
@@ -1060,7 +1080,7 @@
     <!-- Firebase SDKs -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-    import { getStorage, ref, uploadString, getDownloadURL, listAll } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-storage.js";
+    import { getStorage, ref, uploadString, getDownloadURL, listAll, deleteObject } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-storage.js";
 
     // Firebase configuration
     const firebaseConfig = {
@@ -1473,103 +1493,131 @@ ${diagnosis ? `<div class="content-section">
     };
 
     // טעינה רק מהענן
-    async function loadHistory() {
-        if (!isAuthenticated) return;
-        
+// החלף את הפונקציה loadHistory בזו (ישירות עם proxy, ללא ניסיונות מיותרים):
+async function loadHistory() {
+    if (!isAuthenticated) return;
+    
+    try {
+        document.getElementById('loadingHistory').classList.remove('hidden');
+        document.getElementById('historyTable').classList.add('hidden');
+        document.getElementById('statsSection').classList.add('hidden');
+        document.getElementById('emptyState').classList.add('hidden');
+
+        allSummaries = [];
+
         try {
-            document.getElementById('loadingHistory').classList.remove('hidden');
-            document.getElementById('historyTable').classList.add('hidden');
-            document.getElementById('statsSection').classList.add('hidden');
-            document.getElementById('emptyState').classList.add('hidden');
-
-            allSummaries = [];
-
-            // טעינה מהענן דרך CORS Proxy
-            try {
-                const listRef = ref(storage, 'ariel/');
-                const result = await listAll(listRef);
-                
-                for (const itemRef of result.items) {
-                    try {
-                        // קבלת URL ישיר
-                        const url = await getDownloadURL(itemRef);
-                        
-                        // שימוש ב-corsproxy.io
-                        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
-                        const response = await fetch(proxyUrl);
-                        const text = await response.text();
-                        const data = JSON.parse(text);
-                        
-                        data.id = itemRef.name;
-                        data.isCloud = true;
-                        allSummaries.push(data);
-                    } catch (fileError) {
-                        console.log(`לא ניתן לטעון קובץ ${itemRef.name}, ממשיך...`);
+            const listRef = ref(storage, 'ariel/');
+            const result = await listAll(listRef);
+            
+            console.log(`נמצאו ${result.items.length} קבצים, טוען במקביל...`);
+            
+            // טעינה במקביל של כל הקבצים - ישירות עם proxy
+            const loadPromises = result.items.map(async (itemRef) => {
+                try {
+                    const url = await getDownloadURL(itemRef);
+                    
+                    // שימוש ישיר ב-proxy מהיר יותר
+                    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+                    const response = await fetch(proxyUrl);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
                     }
+                    
+                    const text = await response.text();
+                    const data = JSON.parse(text);
+                    
+                    data.id = itemRef.name;
+                    data.isCloud = true;
+                    return data;
+                    
+                } catch (fileError) {
+                    console.log(`קובץ ${itemRef.name} לא נטען:`, fileError.message);
+                    return null;
                 }
-                
-                if (allSummaries.length > 0) {
-                    console.log(`נטענו ${allSummaries.length} סיכומים מהענן`);
-                }
-            } catch (cloudError) {
-                console.error('שגיאה בטעינה מהענן:', cloudError);
-                document.getElementById('loadingHistory').innerHTML = 
-                    '<div style="color: #e74c3c;">❌ שגיאה בחיבור לענן</div>';
-                return;
-            }
-
-            // מיון לפי תאריך
-            allSummaries.sort((a, b) => new Date(b.date) - new Date(a.date));
+            });
             
-            currentSummaries = allSummaries;
-            displayHistory();
-            updateStats();
-
-            document.getElementById('loadingHistory').classList.add('hidden');
+            // ממתין לכל הטעינות במקביל עם timeout
+            const timeoutPromise = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Timeout')), 15000) // 15 שניות timeout
+            );
             
-            if (allSummaries.length > 0) {
-                document.getElementById('historyTable').classList.remove('hidden');
-                document.getElementById('statsSection').classList.remove('hidden');
-            } else {
-                document.getElementById('emptyState').classList.remove('hidden');
+            const results = await Promise.race([
+                Promise.allSettled(loadPromises),
+                timeoutPromise
+            ]);
+            
+            // מסנן רק את התוצאות המוצלחות
+            if (Array.isArray(results)) {
+                results.forEach(result => {
+                    if (result.status === 'fulfilled' && result.value) {
+                        allSummaries.push(result.value);
+                    }
+                });
             }
-
-        } catch (error) {
-            console.error('שגיאה בטעינת ההיסטוריה:', error);
+            
+            console.log(`✅ נטענו ${allSummaries.length} סיכומים בהצלחה`);
+            
+        } catch (cloudError) {
+            console.error('שגיאה בטעינה:', cloudError);
             document.getElementById('loadingHistory').innerHTML = 
-                '<div style="color: #e74c3c;">❌ שגיאה בטעינת ההיסטוריה</div>';
+                '<div style="color: #e74c3c;">❌ שגיאה בטעינה מהענן</div>';
+            return;
         }
-        
-        resetSessionTimer();
-    }
 
-    function displayHistory() {
-        const tbody = document.getElementById('historyBody');
-        tbody.innerHTML = '';
-
-        currentSummaries.forEach((summary) => {
-            const row = document.createElement('tr');
-            const date = new Date(summary.date).toLocaleDateString('he-IL');
-            const time = summary.timeString || new Date(summary.date).toLocaleTimeString('he-IL', {hour: '2-digit', minute: '2-digit'});
-            
-            row.innerHTML = `
-                <td>${date} ${time} ☁️</td>
-                <td>${summary.patientName || 'לא זמין'}</td>
-                <td>${summary.patientId || 'לא זמין'}</td>
-                <td class="actions">
-                    <button class="btn" onclick="viewSummary('${summary.id}')">👁️ צפייה</button>
-                    <button class="btn success" onclick="printSummary('${summary.id}')">🖨️ הדפסה</button>
-                </td>
-            `;
-            tbody.appendChild(row);
-        });
+        // מיון לפי תאריך (החדש ביותר קודם)
+        allSummaries.sort((a, b) => new Date(b.date) - new Date(a.date));
         
-        if (currentSummaries.length === 0) {
-            const row = document.createElement('tr');
-            row.innerHTML = '<td colspan="4" style="text-align: center; padding: 30px; color: #666;">אין סיכומים להצגה</td>';
-            tbody.appendChild(row);
+        currentSummaries = allSummaries;
+        displayHistory();
+        updateStats();
+
+        document.getElementById('loadingHistory').classList.add('hidden');
+        
+        if (allSummaries.length > 0) {
+            document.getElementById('historyTable').classList.remove('hidden');
+            document.getElementById('statsSection').classList.remove('hidden');
+        } else {
+            document.getElementById('emptyState').classList.remove('hidden');
         }
+
+    } catch (error) {
+        console.error('שגיאה כללית:', error);
+        document.getElementById('loadingHistory').innerHTML = 
+            '<div style="color: #e74c3c;">❌ שגיאה בטעינת ההיסטוריה</div>';
     }
+    
+    resetSessionTimer();
+}
+
+function displayHistory() {
+    const tbody = document.getElementById('historyBody');
+    tbody.innerHTML = '';
+
+    currentSummaries.forEach((summary) => {
+        const row = document.createElement('tr');
+        const date = new Date(summary.date).toLocaleDateString('he-IL');
+        const time = summary.timeString || new Date(summary.date).toLocaleTimeString('he-IL', {hour: '2-digit', minute: '2-digit'});
+        
+        row.innerHTML = `
+            <td>${date} ${time} ☁️</td>
+            <td>${summary.patientName || 'לא זמין'}</td>
+            <td>${summary.patientId || 'לא זמין'}</td>
+            <td class="actions">
+                <button class="btn" onclick="viewSummary('${summary.id}')">👁️ צפייה</button>
+                <button class="btn success" onclick="printSummary('${summary.id}')">🖨️ הדפסה</button>
+                <button class="btn danger" onclick="deleteSummary('${summary.id}', '${summary.patientName || 'מטופל לא ידוע'}')">🗑️ מחיקה</button>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+    
+    if (currentSummaries.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = '<td colspan="4" style="text-align: center; padding: 30px; color: #666;">אין סיכומים להצגה</td>';
+        tbody.appendChild(row);
+    }
+}
 
     function updateStats() {
         const total = allSummaries.length;
@@ -1726,103 +1774,118 @@ ${diagnosis ? `<div class="content-section">
     });
 
     // הוסף את זה לקוד שלך
-    document.addEventListener('DOMContentLoaded', function() {
-        const textareas = document.querySelectorAll('textarea');
-        // תיקון לאייפון
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-        if (isIOS) {
-            textareas.forEach(textarea => {
-                textarea.addEventListener('focus', function() {
-                    if (this.id === 'diagnosis') {
-                        this.style.textAlign = 'left';
-                        this.style.direction = 'ltr';
-                    } else {
-                        this.style.textAlign = 'right';
-                        this.style.direction = 'rtl';
-                    }
-                });
-            });
-        }
+// החלף את כל הקטע של document.addEventListener('DOMContentLoaded' בזה:
+
+document.addEventListener('DOMContentLoaded', function() {
+    const textareas = document.querySelectorAll('textarea');
+    
+    // תיקון לאייפון
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (isIOS) {
         textareas.forEach(textarea => {
-            textarea.addEventListener('input', function() {
+            textarea.addEventListener('focus', function() {
                 if (this.id === 'diagnosis') {
-                    // עיבוד מיוחד לאבחנות
-                    let text = this.value;
-                    let lines = text.split('\n');
-                    let newLines = [];
-                    
-                    lines.forEach((line, index) => {
-                        // הסרת נקודות קיימות מתחילת השורה
-                        line = line.replace(/^[•\-\*]\s*/, '').trim();
-                        
-                        if (line.length > 0) {
-                            // בדיקה אם כבר יש נקודה
-                            if (!line.startsWith('• ')) {
-                                line = '• ' + line;
-                            }
-                            
-                            // שבירת שורות ארוכות
-                            while (line.length > 95) {
-                                let breakPoint = 95;
-                                let lastSpace = line.lastIndexOf(' ', 95);
-                                
-                                if (lastSpace > 70) {
-                                    breakPoint = lastSpace;
-                                }
-                                
-                                newLines.push(line.substring(0, breakPoint));
-                                line = '  ' + line.substring(breakPoint).trim();
-                            }
-                            newLines.push(line);
-                        } else if (index < lines.length - 1) {
-                            newLines.push(''); // שורה ריקה
-                        }
-                    });
-                    
-                    this.value = newLines.join('\n');
+                    this.style.textAlign = 'left';
+                    this.style.direction = 'ltr';
                 } else {
-                    // עיבוד רגיל לשאר השדות (הקוד הקיים)
-                    let text = this.value;
-                    let lines = text.split('\n');
-                    let newLines = [];
-                    lines.forEach(line => {
-                        while (line.length > 93) {
-                            let breakPoint = 93;
-                            let lastSpace = line.lastIndexOf(' ', 93);
-                            
-                            if (lastSpace > 70) {
-                                breakPoint = lastSpace;
-                            }
-                            
-                            newLines.push(line.substring(0, breakPoint));
-                            line = line.substring(breakPoint).trim();
-                        }
-                        newLines.push(line);
-                    });
-                    
-                    this.value = newLines.join('\n');
+                    this.style.textAlign = 'right';
+                    this.style.direction = 'rtl';
                 }
             });
-            // טיפול מיוחד בלחיצה על Enter באבחנות
-            if (textarea.id === 'diagnosis') {
-                textarea.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault(); // מונע את ה-Enter הרגיל
-                        
-                        const cursorPos = this.selectionStart;
-                        const textBefore = this.value.substring(0, cursorPos);
-                        const textAfter = this.value.substring(cursorPos);
-                        
-                        // הוספת שורה חדשה עם נקודה
-                        this.value = textBefore + '\n• ' + textAfter;
-                        
-                        // העברת הסמן למקום הנכון (אחרי הנקודה)
-                        this.selectionStart = this.selectionEnd = cursorPos + 3;
-                    }
-                });
-            }
         });
+    }
+    
+    textareas.forEach(textarea => {
+        // טיפול מיוחד במקש Enter באבחנות - רק Enter!
+        if (textarea.id === 'diagnosis') {
+            textarea.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const cursorPos = this.selectionStart;
+                    const textBefore = this.value.substring(0, cursorPos);
+                    const textAfter = this.value.substring(cursorPos);
+                    
+                    // הוסף שורה חדשה עם נקודה
+                    this.value = textBefore + '\n• ' + textAfter;
+                    
+                    // העבר את הסמן למקום הנכון (אחרי הנקודה והרווח)
+                    this.selectionStart = this.selectionEnd = cursorPos + 3;
+                }
+                // כל המקשים האחרים (כולל רווח, אותיות, מספרים) עוברים רגיל!
+            });
+            
+            // וודא שהשורה הראשונה מתחילה בנקודה כשמתחילים להקליד
+            textarea.addEventListener('input', function(e) {
+                if (this.value && !this.value.startsWith('• ') && !this.value.includes('\n')) {
+                    // רק אם זו השורה הראשונה וחסרה נקודה
+                    const cursorPos = this.selectionStart;
+                    this.value = '• ' + this.value;
+                    this.selectionStart = this.selectionEnd = cursorPos + 2;
+                }
+            });
+        }
+        
+        // לשאר השדות - ללא שינוי
+        else {
+            textarea.addEventListener('input', function(e) {
+                // כאן יכול להיות קוד לעיבוד שדות אחרים אם צריך
+            });
+        }
     });
+});
+window.deleteSummary = async function(summaryId, patientName) {
+    if (!isAuthenticated) return;
+    
+    // אישור מחיקה
+    const confirmMessage = `האם אתה בטוח שברצונך למחוק את הסיכום של:\n${patientName}?\n\nפעולה זו לא ניתנת לביטול!`;
+    
+    if (!confirm(confirmMessage)) {
+        return; // המשתמש ביטל
+    }
+    
+    try {
+        // הצגת הודעת טעינה
+        const deleteButtons = document.querySelectorAll(`button[onclick*="${summaryId}"][onclick*="deleteSummary"]`);
+        deleteButtons.forEach(btn => {
+            btn.disabled = true;
+            btn.textContent = '⏳ מוחק...';
+        });
+        
+        // מחיקה מהענן
+        const fileRef = ref(storage, `ariel/${summaryId}`);
+        await deleteObject(fileRef);
+        
+        // הסרה מהמערך המקומי
+        allSummaries = allSummaries.filter(summary => summary.id !== summaryId);
+        currentSummaries = currentSummaries.filter(summary => summary.id !== summaryId);
+        
+        // רענון התצוגה
+        displayHistory();
+        updateStats();
+        
+        // בדיקה אם נשארו סיכומים
+        if (allSummaries.length === 0) {
+            document.getElementById('historyTable').classList.add('hidden');
+            document.getElementById('statsSection').classList.add('hidden');
+            document.getElementById('emptyState').classList.remove('hidden');
+        }
+        
+        alert(`✅ הסיכום של ${patientName} נמחק בהצלחה`);
+        
+    } catch (error) {
+        console.error('שגיאה במחיקת הסיכום:', error);
+        alert('❌ שגיאה במחיקת הסיכום. נסה שוב.');
+        
+        // החזרת הכפתורים למצב רגיל
+        const deleteButtons = document.querySelectorAll(`button[onclick*="${summaryId}"][onclick*="deleteSummary"]`);
+        deleteButtons.forEach(btn => {
+            btn.disabled = false;
+            btn.textContent = '🗑️ מחיקה';
+        });
+    }
+    
+    resetSessionTimer();
+};
 </script>
 </body>
 </html>
