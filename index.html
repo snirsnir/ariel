@@ -1320,12 +1320,27 @@ pinInputs[0].focus();
         resetSessionTimer();
     };
 
-    window.showNewConsultation = function() {
-        if (!isAuthenticated) return;
-        hideAllSections();
-        document.getElementById('newConsultationSection').classList.add('active');
-        resetSessionTimer();
-    };
+// החלף את הפונקציה showNewConsultation בזו:
+window.showNewConsultation = function() {
+    if (!isAuthenticated) return;
+    
+    hideAllSections();
+    document.getElementById('newConsultationSection').classList.add('active');
+    
+    // **תמיד נקה את הטופס כשנכנסים לסיכום חדש**
+    document.getElementById('patientName').value = '';
+    document.getElementById('patientId').value = '';
+    document.getElementById('medicalReview').value = '';
+    document.getElementById('diagnosis').value = '';
+    document.getElementById('instructions').value = '';
+    document.getElementById('recipientEmail').value = '';
+    
+    // הסתר את התצוגה המקדימה
+    document.getElementById('previewContainer').classList.remove('active');
+    document.getElementById('clearAfterPrintBtn').classList.add('hidden');
+    
+    resetSessionTimer();
+};
 
     window.showHistory = function() {
         if (!isAuthenticated) return;
