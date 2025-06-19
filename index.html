@@ -1312,43 +1312,92 @@ pinInputs[0].focus();
     document.addEventListener('scroll', resetSessionTimer);
     document.addEventListener('mousemove', resetSessionTimer);
 
+    function hasFormContent() {
+    const patientName = document.getElementById('patientName').value.trim();
+    const patientId = document.getElementById('patientId').value.trim();
+    const medicalReview = document.getElementById('medicalReview').value.trim();
+    const diagnosis = document.getElementById('diagnosis').value.trim();
+    const instructions = document.getElementById('instructions').value.trim();
+    
+    return patientName || patientId || medicalReview || diagnosis || instructions;
+}
+
+// בודק אם נמצאים בעמוד סיכום חדש
+function isOnNewConsultationPage() {
+    return document.getElementById('newConsultationSection').classList.contains('active');
+}
+
+// משתנה גלובלי לעקוב אחרי מקור הטופס
+let formSource = 'new'; // 'new' או 'history'
+
     // Navigation functions
-    window.showMain = function() {
-        if (!isAuthenticated) return;
-        hideAllSections();
-        document.getElementById('mainSection').classList.add('active');
-        resetSessionTimer();
-    };
+window.showMain = function() {
+    if (!isAuthenticated) return;
+    
+    // בדוק אם צריך אזהרה
+    if (isOnNewConsultationPage() && formSource === 'new' && hasFormContent()) {
+        const confirmExit = confirm('יש לך תוכן שלא נשמר בטופס.\nהאם אתה בטוח שברצונך לצאת? הכל יימחק!');
+        if (!confirmExit) {
+            return; // המשתמש ביטל - נשאר בטופס
+        }
+    }
+    
+    // איפוס מקור הטופס
+    formSource = 'new';
+    
+    hideAllSections();
+    document.getElementById('mainSection').classList.add('active');
+    resetSessionTimer();
+};
+
 
 // החלף את הפונקציה showNewConsultation בזו:
-window.showNewConsultation = function() {
+window.showNewConsultation = function(fromHistory = false) {
     if (!isAuthenticated) return;
+    
+    // עדכן את מקור הטופס
+    formSource = fromHistory ? 'history' : 'new';
     
     hideAllSections();
     document.getElementById('newConsultationSection').classList.add('active');
     
-    // **תמיד נקה את הטופס כשנכנסים לסיכום חדש**
-    document.getElementById('patientName').value = '';
-    document.getElementById('patientId').value = '';
-    document.getElementById('medicalReview').value = '';
-    document.getElementById('diagnosis').value = '';
-    document.getElementById('instructions').value = '';
-    document.getElementById('recipientEmail').value = '';
-    
-    // הסתר את התצוגה המקדימה
-    document.getElementById('previewContainer').classList.remove('active');
-    document.getElementById('clearAfterPrintBtn').classList.add('hidden');
+    // נקה את הטופס רק אם זה לא מגיע מההיסטוריה
+    if (!fromHistory) {
+        document.getElementById('patientName').value = '';
+        document.getElementById('patientId').value = '';
+        document.getElementById('medicalReview').value = '';
+        document.getElementById('diagnosis').value = '';
+        document.getElementById('instructions').value = '';
+        document.getElementById('recipientEmail').value = '';
+        
+        // הסתר את התצוגה המקדימה
+        document.getElementById('previewContainer').classList.remove('active');
+        document.getElementById('clearAfterPrintBtn').classList.add('hidden');
+    }
     
     resetSessionTimer();
 };
 
-    window.showHistory = function() {
-        if (!isAuthenticated) return;
-        hideAllSections();
-        document.getElementById('historySection').classList.add('active');
-        loadHistory();
-        resetSessionTimer();
-    };
+
+window.showHistory = function() {
+    if (!isAuthenticated) return;
+    
+    // בדוק אם צריך אזהרה
+    if (isOnNewConsultationPage() && formSource === 'new' && hasFormContent()) {
+        const confirmExit = confirm('יש לך תוכן שלא נשמר בטופס.\nהאם אתה בטוח שברצונך לצאת? הכל יימחק!');
+        if (!confirmExit) {
+            return; // המשתמש ביטל - נשאר בטופס
+        }
+    }
+    
+    // איפוס מקור הטופס
+    formSource = 'new';
+    
+    hideAllSections();
+    document.getElementById('historySection').classList.add('active');
+    loadHistory();
+    resetSessionTimer();
+};
 
     function hideAllSections() {
         document.querySelectorAll('.section').forEach(section => {
@@ -1431,18 +1480,23 @@ ${diagnosis ? `<div class="content-section">
         resetSessionTimer();
     };
 
-    window.clearForm = function() {
-        if (!isAuthenticated) return;
-        
-        document.getElementById('patientName').value = '';
-        document.getElementById('patientId').value = '';
-        document.getElementById('medicalReview').value = '';
-        document.getElementById('diagnosis').value = '';
-        document.getElementById('instructions').value = '';
-        document.getElementById('previewContainer').classList.remove('active');
-        document.getElementById('clearAfterPrintBtn').classList.add('hidden');
-        resetSessionTimer();
-    };
+window.clearForm = function() {
+    if (!isAuthenticated) return;
+    
+    document.getElementById('patientName').value = '';
+    document.getElementById('patientId').value = '';
+    document.getElementById('medicalReview').value = '';
+    document.getElementById('diagnosis').value = '';
+    document.getElementById('instructions').value = '';
+    document.getElementById('recipientEmail').value = '';
+    document.getElementById('previewContainer').classList.remove('active');
+    document.getElementById('clearAfterPrintBtn').classList.add('hidden');
+    
+    // איפוס מקור הטופס לחדש
+    formSource = 'new';
+    
+    resetSessionTimer();
+};
 
     // שמירה רק לענן
     window.saveAndPrint = async function() {
@@ -1680,33 +1734,33 @@ function displayHistory() {
         resetSessionTimer();
     };
 
-    window.viewSummary = function(summaryId) {
-        if (!isAuthenticated) return;
-        
-        const summary = allSummaries.find(s => s.id === summaryId);
-        if (!summary) {
-            alert('סיכום לא נמצא');
-            return;
-        }
+window.viewSummary = function(summaryId) {
+    if (!isAuthenticated) return;
+    
+    const summary = allSummaries.find(s => s.id === summaryId);
+    if (!summary) {
+        alert('סיכום לא נמצא');
+        return;
+    }
 
-        // מילוי הטופס עם הנתונים הקיימים
-        document.getElementById('patientName').value = summary.patientName || '';
-        document.getElementById('patientId').value = summary.patientId || '';
-        document.getElementById('medicalReview').value = summary.medicalReview || '';
-        document.getElementById('diagnosis').value = summary.diagnosis || '';
-        document.getElementById('instructions').value = summary.instructions || '';
+    // מילוי הטופס עם הנתונים הקיימים
+    document.getElementById('patientName').value = summary.patientName || '';
+    document.getElementById('patientId').value = summary.patientId || '';
+    document.getElementById('medicalReview').value = summary.medicalReview || '';
+    document.getElementById('diagnosis').value = summary.diagnosis || '';
+    document.getElementById('instructions').value = summary.instructions || '';
 
-        // עבור לעמוד החדש וצור תצוגה מקדימה
-        showNewConsultation();
-        setTimeout(() => {
-            generatePreview();
-            // גלילה לתצוגה המקדימה
-            document.getElementById('previewContainer').scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-        
-        resetSessionTimer();
-    };
-
+    // עבור לעמוד החדש **עם סימון שזה מההיסטוריה**
+    showNewConsultation(true); // ← הוסף true כאן!
+    
+    setTimeout(() => {
+        generatePreview();
+        // גלילה לתצוגה המקדימה
+        document.getElementById('previewContainer').scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+    
+    resetSessionTimer();
+};
     window.printSummary = function(summaryId) {
         if (!isAuthenticated) return;
         
